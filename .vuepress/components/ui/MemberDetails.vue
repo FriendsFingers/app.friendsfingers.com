@@ -132,9 +132,9 @@
         const chunk = fingerprint.replace('0x', '').match(new RegExp('.{1,6}', 'g'));
 
         return {
-          mainColor: `#${chunk[0]}`,
+          borderColor: `#${chunk[0]}`,
           backgroundColor: `#${chunk[1]}`,
-          borderColor: `#${chunk[2]}`,
+          mainColor: `#${chunk[2]}`,
         };
       },
     },
