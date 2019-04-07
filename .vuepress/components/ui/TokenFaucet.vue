@@ -275,7 +275,7 @@
           this.token.link = this.network.current.etherscanLink + '/token/' + this.instances.token.address;
           this.token.logo = this.$withBase('/assets/images/logo/shaka_logo_white.png');
         } catch (e) {
-          console.log(e);
+          console.log(e); // eslint-disable-line no-console
           this.loading = false;
           alert('Some error occurred.');
         }
@@ -299,7 +299,7 @@
 
           this.faucet.percentage = 100 * this.faucet.distributedTokens / this.faucet.max;
         } catch (e) {
-          console.log(e);
+          console.log(e); // eslint-disable-line no-console
           this.loading = false;
           alert('Some error occurred.');
         }
@@ -337,7 +337,7 @@
           }
           this.loadingData = false;
         } catch (e) {
-          console.log(e);
+          console.log(e); // eslint-disable-line no-console
           this.loadingData = false;
           alert('Some error occurred.');
         }
@@ -364,7 +364,7 @@
             );
           }
         }).catch((e) => {
-          console.log(e);
+          console.log(e); // eslint-disable-line no-console
           this.makingTransaction = false;
           alert('Some error occurred.');
         });
