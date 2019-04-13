@@ -2,7 +2,7 @@
 
 import TokenArtifact from '../abi/BaseToken';
 import FaucetArtifact from '../abi/TokenFaucet';
-import DAOArtifact from '../abi/ProofOfFriends';
+import DAOArtifact from '../abi/DAO';
 
 export default {
   data () {
