@@ -24,7 +24,7 @@
                             </b-list-group-item>
                             <b-list-group-item>Staked tokens: {{ member.stakedTokens }} {{ token.symbol }}
                             </b-list-group-item>
-                            <b-list-group-item>KYC: {{ member.kyc ? 'Yes' : 'No' }}</b-list-group-item>
+                            <b-list-group-item>Verified: {{ member.verified ? 'Yes' : 'No' }}</b-list-group-item>
                             <b-list-group-item>Member since: {{ member.creationDate | formatLocaleDate }}
                             </b-list-group-item>
                         </b-list-group>
@@ -36,7 +36,6 @@
                     No member found.
                 </b-card-body>
             </template>
-
         </b-col>
     </b-row>
 </template>
@@ -125,7 +124,7 @@
           creationDate: struct[3].valueOf() * 1000,
           stakedTokens: this.web3.fromWei(struct[4]),
           data: struct[5],
-          kyc: struct[6],
+          verified: struct[6],
         };
       },
       formatFingerprint (fingerprint) {
