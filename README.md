@@ -1,9 +1,9 @@
 ---
-title: FriendsFingers DAO
+title: FriendsFingers DAPP
 component: Home
 ---
 
-## FriendsFingers DAO official web site
+## FriendsFingers DAPP official web site
 
 Source code of [app.friendsfingers.com](https://app.friendsfingers.com)
 

@@ -1,8 +1,8 @@
 {
-  "title": "FriendsFingers DAO",
+  "title": "FriendsFingers DAPP",
   "name": "app.friendsfingers.com",
   "version": "0.0.1",
-  "description": "FriendsFingers DAO official web site",
+  "description": "FriendsFingers DAPP official web site",
   "scripts": {
     "lint:vue": "eslint .vuepress --ext .vue,.js",
     "lint:vue:fix": "eslint .vuepress --ext .vue,.js --fix",
@@ -40,17 +40,17 @@
     "@saeris/vue-spinners": "^1.0.8",
     "@vuepress/plugin-google-analytics": "^1.0.0-alpha.47",
     "babel-eslint": "^10.0.1",
-    "bootstrap-vue": "^2.0.0-rc.18",
+    "bootstrap-vue": "^2.0.0-rc.19",
     "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.12.0",
     "sass-loader": "^7.1.0",
-    "vee-validate": "^2.2.3",
-    "vue-eslint-parser": "^6.0.3",
+    "vee-validate": "^2.2.5",
+    "vue-eslint-parser": "^6.0.4",
     "vuepress": "^1.0.0-alpha.47"
   }
 }

@@ -29,7 +29,7 @@
                 </p>
                 <p class="lead mt-5">
                     Get your Shaka on
-                    <b-link href="https://bitrabbit.com/en" target="_blank" class="px-2">
+                    <b-link href="https://bitrabbit.com/markets/hak_eth" target="_blank" class="px-2">
                         <b-img :src="$withBase('/assets/images/exchanges/bitrabbit.png')"
                                height="64"
                                alt="BitRabbit"/>
