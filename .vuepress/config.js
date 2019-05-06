@@ -18,6 +18,8 @@ module.exports = {
     // TODO remove this
     const isProd = false;
 
+    // TODO set empty DAO_ADDRESS 0xCCCD3bedfeD07f1aAD588437AB53C83b6074f2c1
+
     config.plugin('injections').tap(pluginArgs => pluginArgs.map(definitions => ({
       ...definitions,
       '__TOKEN_ADDRESS__': JSON.stringify(isProd ? '0x93a7174dafd31d13400cd9fa01f4e5b5baa00d39' : '0xe58cade1d92e5f5ce8b1bb4489c2196f832d5807'), // eslint-disable-line max-len

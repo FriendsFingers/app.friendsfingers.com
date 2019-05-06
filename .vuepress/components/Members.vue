@@ -43,7 +43,6 @@
         }
       },
       async ready () {
-        this.loading = false;
         this.membersNumber = parseInt((await this.promisify(this.instances.dao.membersNumber)).valueOf());
 
         await this.getMember(1);
@@ -57,32 +56,6 @@
         if (this.memberList.length < this.membersNumber) {
           this.getMember(this.memberList.length + 1);
         }
-      },
-      formatStructure (struct) {
-        const memberId = parseInt(struct[0].valueOf());
-
-        if (memberId === 0) {
-          return null;
-        }
-
-        return {
-          id: parseInt(struct[0].valueOf()),
-          address: struct[1],
-          fingerprint: this.formatFingerprint(struct[2]),
-          creationDate: struct[3].valueOf() * 1000,
-          stakedTokens: this.web3.fromWei(struct[4]),
-          data: struct[5],
-          verified: struct[6],
-        };
-      },
-      formatFingerprint (fingerprint) {
-        const chunk = fingerprint.replace('0x', '').match(new RegExp('.{1,6}', 'g'));
-
-        return {
-          borderColor: `#${chunk[0]}`,
-          backgroundColor: `#${chunk[1]}`,
-          mainColor: `#${chunk[2]}`,
-        };
       },
     },
   };

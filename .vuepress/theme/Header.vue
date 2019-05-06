@@ -14,6 +14,7 @@
 
         <b-collapse is-nav id="nav_collapse">
             <b-navbar-nav>
+                <b-nav-item :to="$withBase('/dashboard')">Dashboard</b-nav-item>
                 <b-nav-item :to="$withBase('/members')">Members</b-nav-item>
                 <b-nav-item :to="$withBase('/faucet')">Faucet</b-nav-item>
             </b-navbar-nav>
