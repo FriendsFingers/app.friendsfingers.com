@@ -22,13 +22,13 @@
 
 <script>
   import browser from '../mixins/browser';
-  import dapp from '../mixins/dapp';
+  import dappMixin from '../mixins/dapp.mixin';
 
   export default {
     name: 'Member',
     mixins: [
       browser,
-      dapp,
+      dappMixin,
     ],
     data () {
       return {
@@ -44,17 +44,21 @@
         member: null,
       };
     },
+    computed: {
+      network: {
+        get () {
+          return this.$store.getters['network'];
+        },
+      },
+    },
     async mounted () {
       this.memberId = this.getParam('id');
 
-      this.currentNetwork = this.network.default;
       await this.initDapp();
     },
     methods: {
       async initDapp () {
-        this.network.current = this.network.list[this.currentNetwork];
         try {
-          await this.initWeb3(this.currentNetwork, true);
           this.initContracts();
         } catch (e) {
           alert(e);

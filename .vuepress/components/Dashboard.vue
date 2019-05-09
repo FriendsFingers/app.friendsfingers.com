@@ -11,10 +11,8 @@
                     <template v-if="metamask.address">
                         <template v-if="!loadingData">
                             <template v-if="account.member">
-                                <ui--member-details :member="account.member"
-                                                    :token="token"
-                                                    :network="network">
-                                </ui--member-details>
+                                <ui--member-details :member="account.member" :token="token"
+                                                    :network="network"></ui--member-details>
                             </template>
                             <template v-else>
                                 <b-card header="Your account" class="mb-3">
@@ -65,13 +63,13 @@
 
 <script>
   import browser from '../mixins/browser';
-  import dapp from '../mixins/dapp';
+  import dappMixin from '../mixins/dapp.mixin';
 
   export default {
     name: 'Dashboard',
     mixins: [
       browser,
-      dapp,
+      dappMixin,
     ],
     data () {
       return {
@@ -91,16 +89,29 @@
         },
       };
     },
-    computed: {},
+    computed: {
+      network: {
+        get () {
+          return this.$store.getters['network'];
+        },
+      },
+      metamask: {
+        get () {
+          return this.$store.getters['metamask'];
+        },
+      },
+      web3: {
+        get () {
+          return this.$store.getters['web3'];
+        },
+      },
+    },
     async mounted () {
-      this.currentNetwork = this.network.default;
       await this.initDapp();
     },
     methods: {
       async initDapp () {
-        this.network.current = this.network.list[this.currentNetwork];
         try {
-          await this.initWeb3(this.currentNetwork, true);
           this.initContracts();
         } catch (e) {
           alert(e);
@@ -114,7 +125,7 @@
         this.loading = false;
       },
       async enable () {
-        await this.connect();
+        await this.$store.dispatch('connect');
         await this.getAccountData();
       },
       async getTokenData () {

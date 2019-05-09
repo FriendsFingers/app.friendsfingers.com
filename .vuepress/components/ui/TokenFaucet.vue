@@ -8,12 +8,16 @@
                     <template v-if="!makingTransaction && !loadingData">
                         <b>Account:</b>
                         <b-link :href="`${network.current.etherscanLink}/address/${account.address}`"
-                                target="_blank">{{ account.address }}</b-link><br>
+                                target="_blank">{{ account.address }}
+                        </b-link>
+                        <br>
 
                         <template v-if="account.referral !== zeroAddress">
                             <b>You have been invited by:</b>
                             <b-link :href="`${network.current.etherscanLink}/address/${account.referral}`"
-                                    target="_blank">{{ account.referral }}</b-link><br>
+                                    target="_blank">{{ account.referral }}
+                            </b-link>
+                            <br>
                         </template>
 
                         You have earned <b>{{ account.receivedTokens }} {{ token.symbol }}</b> by using faucet.<br>
@@ -72,12 +76,14 @@
                                 Note: you just need to pay Gas to get your tokens
                                 <b-link href="https://kb.myetherwallet.com/gas/what-is-gas-ethereum.html"
                                         target="_blank" v-b-tooltip.hover title="What is Gas?">
-                                    <font-awesome-icon icon="info-circle" />
+                                    <font-awesome-icon icon="info-circle"/>
                                 </b-link>
                             </small>
 
                             <b-alert show v-if="trx.hash" variant="success" class="mt-3">
-                                Last transaction: <b-link :href="trx.link" target="_blank">{{ trx.hash }}</b-link>.
+                                Last transaction:
+                                <b-link :href="trx.link" target="_blank">{{ trx.hash }}</b-link>
+                                .
                             </b-alert>
                         </b-form>
                         <hr class="my-4">
@@ -95,16 +101,16 @@
                         </b-form-group>
                         <p class="share-link">
                             <b-btn :href="account.share.twitter" target="_blank" class="twitter">
-                                <font-awesome-icon :icon="['fab', 'twitter']" />
+                                <font-awesome-icon :icon="['fab', 'twitter']"/>
                             </b-btn>
                             <b-btn :href="account.share.facebook" target="_blank" class="facebook">
-                                <font-awesome-icon :icon="['fab', 'facebook-f']" />
+                                <font-awesome-icon :icon="['fab', 'facebook-f']"/>
                             </b-btn>
                             <b-btn :href="account.share.telegram" target="_blank" class="telegram">
-                                <font-awesome-icon :icon="['fab', 'telegram-plane']" />
+                                <font-awesome-icon :icon="['fab', 'telegram-plane']"/>
                             </b-btn>
                             <b-btn v-if="isMobile()" :href="account.share.whatsapp" target="_blank" class="whatsapp">
-                                <font-awesome-icon :icon="['fab', 'whatsapp']" />
+                                <font-awesome-icon :icon="['fab', 'whatsapp']"/>
                             </b-btn>
                         </p>
                         <p class="lead">
@@ -121,7 +127,8 @@
                             Install
                             <b-link href="https://metamask.io/" target="_blank">MetaMask</b-link>
                             or a mobile browser like
-                            <b-link href="https://trustwallet.com/" target="_blank">Trust Wallet</b-link> or
+                            <b-link href="https://trustwallet.com/" target="_blank">Trust Wallet</b-link>
+                            or
                             <b-link href="https://wallet.coinbase.com/" target="_blank">Coinbase Wallet</b-link>
                             to get your Tokens.
                         </template>
@@ -155,7 +162,7 @@
                                     variant="warning"
                                     striped
                                     :animated="true"
-                                    class="mt-2" />
+                                    class="mt-2"/>
 
                         <small>
                             You can earn <b>{{ faucet.dailyRate }} {{ token.symbol }}</b> per day and
@@ -171,7 +178,7 @@
 
 <script>
   import browser from '../../mixins/browser';
-  import dapp from '../../mixins/dapp';
+  import dappMixin from '../../mixins/dapp.mixin';
 
   import friends from '../../content/friends';
 
@@ -179,7 +186,7 @@
     name: 'TokenFaucet',
     mixins: [
       browser,
-      dapp,
+      dappMixin,
     ],
     data () {
       return {
@@ -223,7 +230,23 @@
         },
       };
     },
-    computed: {},
+    computed: {
+      network: {
+        get () {
+          return this.$store.getters['network'];
+        },
+      },
+      metamask: {
+        get () {
+          return this.$store.getters['metamask'];
+        },
+      },
+      web3: {
+        get () {
+          return this.$store.getters['web3'];
+        },
+      },
+    },
     async mounted () {
       const referral = friends[this.getParam('friend')];
 
@@ -233,14 +256,11 @@
         this.referral.address = this.getParam('referral') || '';
       }
 
-      this.currentNetwork = this.network.default;
       await this.initDapp();
     },
     methods: {
       async initDapp () {
-        this.network.current = this.network.list[this.currentNetwork];
         try {
-          await this.initWeb3(this.currentNetwork, true);
           this.initContracts();
         } catch (e) {
           alert(e);
@@ -265,7 +285,7 @@
         this.loading = false;
       },
       async enable () {
-        await this.connect();
+        await this.$store.dispatch('connect');
         await this.getAccountData();
       },
       async getTokenData () {
@@ -283,16 +303,16 @@
       async getFaucetData () {
         try {
           this.faucet.dailyRate = parseFloat(
-            this.web3.fromWei(await this.promisify(this.instances.faucet.dailyRate))
+            this.web3.fromWei(await this.promisify(this.instances.faucet.dailyRate)),
           );
           this.faucet.referralTokens = parseFloat(
-            this.web3.fromWei(await this.promisify(this.instances.faucet.referralTokens))
+            this.web3.fromWei(await this.promisify(this.instances.faucet.referralTokens)),
           );
           this.faucet.remainingTokens = parseFloat(
-            this.web3.fromWei(await this.promisify(this.instances.faucet.remainingTokens))
+            this.web3.fromWei(await this.promisify(this.instances.faucet.remainingTokens)),
           );
           this.faucet.distributedTokens = parseFloat(
-            this.web3.fromWei(await this.promisify(this.instances.faucet.totalDistributedTokens))
+            this.web3.fromWei(await this.promisify(this.instances.faucet.totalDistributedTokens)),
           );
 
           this.faucet.max = this.faucet.distributedTokens + this.faucet.remainingTokens;
@@ -311,13 +331,13 @@
             this.account.address = this.web3.eth.accounts[0];
             this.account.referral = await this.promisify(this.instances.faucet.getReferral, this.account.address);
             this.account.referredAddresses = await this.promisify(
-              this.instances.faucet.getReferredAddresses, this.account.address
+              this.instances.faucet.getReferredAddresses, this.account.address,
             );
             this.account.receivedTokens = parseFloat(
-              this.web3.fromWei(await this.promisify(this.instances.faucet.receivedTokens, this.account.address))
+              this.web3.fromWei(await this.promisify(this.instances.faucet.receivedTokens, this.account.address)),
             );
             this.account.earnedByReferral = parseFloat(
-              this.web3.fromWei(await this.promisify(this.instances.faucet.earnedByReferral, this.account.address))
+              this.web3.fromWei(await this.promisify(this.instances.faucet.earnedByReferral, this.account.address)),
             );
             this.account.lastUpdate = (
               await this.promisify(this.instances.faucet.lastUpdate, this.account.address)
@@ -327,7 +347,7 @@
             ).valueOf() * 1000;
 
             this.account.share.link = window.location.origin + this.$withBase(
-              `/faucet?referral=${this.account.address}`
+              `/faucet?referral=${this.account.address}`,
             );
 
             this.account.share.facebook = `https://www.facebook.com/sharer.php?u=${this.account.share.link}&quote=Earn FREE Shaka, the token that will make you part of the FriendsFingers DAO`; // eslint-disable-line max-len
@@ -360,7 +380,7 @@
                   alert('Some error occurred. Maybe you rejected the transaction or you have MetaMask locked!');
                 }
                 this.makingTransaction = false;
-              }
+              },
             );
           }
         }).catch((e) => {

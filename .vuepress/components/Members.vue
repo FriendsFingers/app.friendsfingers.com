@@ -12,13 +12,13 @@
 
 <script>
   import browser from '../mixins/browser';
-  import dapp from '../mixins/dapp';
+  import dappMixin from '../mixins/dapp.mixin';
 
   export default {
     name: 'Members',
     mixins: [
       browser,
-      dapp,
+      dappMixin,
     ],
     data () {
       return {
@@ -28,14 +28,11 @@
     async mounted () {
       this.memberId = this.getParam('id');
 
-      this.currentNetwork = this.network.default;
       await this.initDapp();
     },
     methods: {
       async initDapp () {
-        this.network.current = this.network.list[this.currentNetwork];
         try {
-          await this.initWeb3(this.currentNetwork, true);
           this.initContracts();
         } catch (e) {
           alert(e);

@@ -27,14 +27,6 @@
                 <p class="lead mt-5">
                     Shaka Tokens will make you part of FriendsFingers' Decentralized Autonomous Organization (DAO).
                 </p>
-                <p class="lead mt-5">
-                    Get your Shaka on
-                    <b-link href="https://bitrabbit.com/markets/hak_eth" target="_blank" class="px-2">
-                        <b-img :src="$withBase('/assets/images/exchanges/bitrabbit.png')"
-                               height="64"
-                               alt="BitRabbit"/>
-                    </b-link>
-                </p>
             </b-col>
         </b-row>
         <b-row class="masthead white m-0">
