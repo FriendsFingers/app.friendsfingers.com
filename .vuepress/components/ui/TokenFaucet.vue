@@ -261,7 +261,10 @@
     methods: {
       async initDapp () {
         try {
-          this.initContracts();
+          this.initToken();
+          this.initFaucet();
+
+          this.ready();
         } catch (e) {
           alert(e);
           document.location.href = this.$withBase('/');

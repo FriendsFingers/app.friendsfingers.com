@@ -30,8 +30,13 @@
 </template>
 
 <script>
+  import browser from '../mixins/browser';
+
   export default {
     name: 'Header',
+    mixins: [
+      browser,
+    ],
     computed: {
       address: {
         get () {
@@ -48,6 +53,21 @@
           return this.$store.getters['metamask'];
         },
       },
+    },
+    async mounted () {
+      if (!this.metamask.installed) {
+        this.makeToast(
+          'No Ethereum Provider',
+          `Please install MetaMask ${(this.isMobile()) ? 'or a mobile browser like Trust Wallet or Coinbase Wallet' : ''} to use DApp.`,
+          'warning',
+        );
+      } else if (this.metamask.netId !== this.network.current.id) {
+        this.makeToast(
+          'Wrong Network',
+          `You are on the wrong Network. Please switch your Ethereum Provider on ${this.network.current.name}.`,
+          'warning',
+        );
+      }
     },
     methods: {
       connect () {

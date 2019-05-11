@@ -2,7 +2,7 @@
 
 export default {
   state: {
-    address: null,
+    address: '',
     legacy: false,
     web3: null,
     web3Provider: null,
@@ -114,7 +114,7 @@ export default {
 
             if (netId !== state.network.list[state.currentNetwork].id) {
               state.network.current = state.network.list[state.network.map[netId]];
-              await state.initWeb3(state.currentNetwork, false);
+              await this.dispatch('initWeb3', false);
             }
 
             state.metamask.address = state.web3.eth.accounts[0] || '';

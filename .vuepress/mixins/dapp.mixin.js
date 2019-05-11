@@ -28,18 +28,19 @@ export default {
     },
   },
   methods: {
-    initContracts () {
+    initToken () {
       this.contracts.token = this.web3.eth.contract(TokenArtifact.abi);
       this.instances.token = this.contracts.token.at(__TOKEN_ADDRESS__);
-      this.contracts.faucet = this.web3.eth.contract(FaucetArtifact.abi);
-      this.instances.faucet = this.contracts.faucet.at(__FAUCET_ADDESS__);
+    },
+    initDao () {
       this.contracts.dao = this.web3.eth.contract(DAOArtifact.abi);
       this.instances.dao = this.contracts.dao.at(__DAO_ADDESS__);
-
-      this.ready();
     },
-    ready () {
+    initFaucet () {
+      this.contracts.faucet = this.web3.eth.contract(FaucetArtifact.abi);
+      this.instances.faucet = this.contracts.faucet.at(__FAUCET_ADDESS__);
     },
+    ready () {},
     formatStructure (struct) {
       const memberId = parseInt(struct[0].valueOf());
 

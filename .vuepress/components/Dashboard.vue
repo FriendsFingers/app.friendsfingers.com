@@ -112,7 +112,10 @@
     methods: {
       async initDapp () {
         try {
-          this.initContracts();
+          this.initToken();
+          this.initDao();
+
+          this.ready();
         } catch (e) {
           alert(e);
           document.location.href = this.$withBase('/');

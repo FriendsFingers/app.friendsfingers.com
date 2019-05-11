@@ -31,5 +31,12 @@ export default {
     print () {
       window.print();
     },
+    makeToast (title, text, variant = null) {
+      this.$bvToast.toast(text, {
+        title: title,
+        variant: variant,
+        solid: true,
+      });
+    },
   },
 };
