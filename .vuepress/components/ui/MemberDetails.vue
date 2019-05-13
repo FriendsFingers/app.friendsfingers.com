@@ -16,7 +16,7 @@
                 </b-list-group-item>
                 <b-list-group-item>Staked tokens: {{ member.stakedTokens }} {{ token.symbol }}
                 </b-list-group-item>
-                <b-list-group-item>Verified: {{ member.verified ? 'Yes' : 'No' }}</b-list-group-item>
+                <b-list-group-item>Approved: {{ member.approved ? 'Yes' : 'No' }}</b-list-group-item>
                 <b-list-group-item>Member since: {{ member.creationDate | formatLocaleDate }}
                 </b-list-group-item>
             </b-list-group>

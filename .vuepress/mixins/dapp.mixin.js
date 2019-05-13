@@ -54,7 +54,7 @@ export default {
         creationDate: struct[3].valueOf() * 1000,
         stakedTokens: this.web3.fromWei(struct[4]),
         data: struct[5],
-        verified: struct[6],
+        approved: struct[6],
       };
     },
     formatFingerprint (fingerprint) {
