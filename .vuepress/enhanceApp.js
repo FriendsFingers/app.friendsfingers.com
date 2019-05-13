@@ -51,4 +51,12 @@ export default ({ Vue }) => {
 
     return new Date(value).toLocaleString();
   });
+
+  Vue.filter('truncate', function (value, length) {
+    if (!length) {
+      length = 10;
+    }
+
+    return value.substr(0, length - 1) + (value.length > length ? '...' : '');
+  });
 };

@@ -19,11 +19,11 @@
             </b-navbar-nav>
 
             <b-navbar-nav class="ml-auto">
-                <b-nav-item>
-                    <b-badge variant="success"> {{ network.default }}</b-badge>
-                </b-nav-item>
-                <b-nav-item v-if="address === ''" @click="connect()">Connect</b-nav-item>
-                <b-nav-item v-else :to="$withBase('/dashboard')">{{ address }}</b-nav-item>
+                <b-nav-item v-if="address === ''" :to="$withBase('/dashboard')">Connect</b-nav-item>
+                <b-nav-item-dropdown v-else :text="address | truncate(12)" right>
+                    <b-dropdown-item :to="$withBase('/dashboard')">Your profile</b-dropdown-item>
+                    <b-dropdown-item @click="disconnect()">Disconnect</b-dropdown-item>
+                </b-nav-item-dropdown>
             </b-navbar-nav>
         </b-collapse>
     </b-navbar>
@@ -40,17 +40,17 @@
     computed: {
       address: {
         get () {
-          return this.$store.getters['address'];
+          return this.$store.getters.address;
         },
       },
       network: {
         get () {
-          return this.$store.getters['network'];
+          return this.$store.getters.network;
         },
       },
       metamask: {
         get () {
-          return this.$store.getters['metamask'];
+          return this.$store.getters.metamask;
         },
       },
     },
@@ -70,8 +70,8 @@
       }
     },
     methods: {
-      connect () {
-        this.$store.dispatch('connect');
+      disconnect () {
+        this.$store.dispatch('disconnect');
       },
     },
   };

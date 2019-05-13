@@ -47,7 +47,7 @@
     computed: {
       network: {
         get () {
-          return this.$store.getters['network'];
+          return this.$store.getters.network;
         },
       },
     },

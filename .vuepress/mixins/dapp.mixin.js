@@ -23,7 +23,7 @@ export default {
   computed: {
     web3: {
       get () {
-        return this.$store.getters['web3'];
+        return this.$store.getters.web3;
       },
     },
   },
@@ -40,7 +40,6 @@ export default {
       this.contracts.faucet = this.web3.eth.contract(FaucetArtifact.abi);
       this.instances.faucet = this.contracts.faucet.at(__FAUCET_ADDESS__);
     },
-    ready () {},
     formatStructure (struct) {
       const memberId = parseInt(struct[0].valueOf());
 

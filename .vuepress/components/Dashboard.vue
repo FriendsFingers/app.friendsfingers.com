@@ -92,17 +92,17 @@
     computed: {
       network: {
         get () {
-          return this.$store.getters['network'];
+          return this.$store.getters.network;
         },
       },
       metamask: {
         get () {
-          return this.$store.getters['metamask'];
+          return this.$store.getters.metamask;
         },
       },
       web3: {
         get () {
-          return this.$store.getters['web3'];
+          return this.$store.getters.web3;
         },
       },
     },

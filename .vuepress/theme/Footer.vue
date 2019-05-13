@@ -6,6 +6,9 @@
             </div>
             <ul class="list-inline mt-2">
                 <li class="list-inline-item">
+                    <b-badge :variant="network.current.color">{{ network.current.name }}</b-badge>
+                </li>
+                <li class="list-inline-item">
                     <small>
                         &copy; 2019 🤙
                         <b-link href="https://www.friendsfingers.com" target="_blank">FriendsFingers</b-link>
@@ -19,9 +22,12 @@
 <script>
   export default {
     name: 'Footer',
+    computed: {
+      network: {
+        get () {
+          return this.$store.getters.network;
+        },
+      },
+    },
   };
 </script>
-
-<style scoped>
-
-</style>

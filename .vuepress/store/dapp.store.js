@@ -26,24 +26,28 @@ export default {
           etherscanLink: 'https://etherscan.io',
           id: '1',
           name: 'Main Ethereum Network',
+          color: 'success',
         },
         ropsten: {
           web3Provider: 'https://ropsten.infura.io/v3/fab631a7b8364aaaa7a8268d09c0f118',
           etherscanLink: 'https://ropsten.etherscan.io',
           id: '3',
           name: 'Ropsten Test Network',
+          color: 'danger',
         },
         rinkeby: {
           web3Provider: 'https://rinkeby.infura.io/v3/fab631a7b8364aaaa7a8268d09c0f118',
           etherscanLink: 'https://rinkeby.etherscan.io',
           id: '4',
           name: 'Rinkeby Test Network',
+          color: 'warning',
         },
         kovan: {
           web3Provider: 'https://kovan.infura.io/v3/fab631a7b8364aaaa7a8268d09c0f118',
           etherscanLink: 'https://kovan.etherscan.io',
           id: '42',
           name: 'Kovan Test Network',
+          color: 'primary',
         },
       },
     },
@@ -81,9 +85,6 @@ export default {
     },
     load ({ commit }) {
       commit('setAddress', localStorage.getItem('address') || null);
-    },
-    remove ({ commit }) {
-      commit('setAddress', null);
     },
     initWeb3 ({ state, commit }, checkWeb3) {
       if (!state.network.list.hasOwnProperty(state.currentNetwork)) {
@@ -145,6 +146,10 @@ export default {
         console.log(e); // eslint-disable-line no-console
         alert('Cannot connect. Please verify that you have MetaMask installed and unlocked.');
       }
+    },
+    disconnect ({ commit }) {
+      commit('setAddress', '');
+      document.location.href = '/';
     },
   },
 };
