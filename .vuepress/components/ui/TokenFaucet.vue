@@ -83,7 +83,6 @@
                             <b-alert show v-if="trx.hash" variant="success" class="mt-3">
                                 Last transaction:
                                 <b-link :href="trx.link" target="_blank">{{ trx.hash }}</b-link>
-                                .
                             </b-alert>
                         </b-form>
                         <hr class="my-4">

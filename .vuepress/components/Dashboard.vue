@@ -21,6 +21,21 @@
                                             target="_blank">{{ account.address }}
                                     </b-link>
                                 </b-card>
+                                <b-card header="FriendsFingers DAO" class="mb-3">
+                                    <b-btn variant="primary"
+                                           size="lg"
+                                           :disabled="makingTransaction"
+                                           @click="join">
+                                        Join DAO
+                                    </b-btn>
+
+                                    <br>
+
+                                    <b-alert show v-if="trx.hash" variant="success" class="mt-3">
+                                        Last transaction:
+                                        <b-link :href="trx.link" target="_blank">{{ trx.hash }}</b-link>
+                                    </b-alert>
+                                </b-card>
                             </template>
                         </template>
                         <template v-else>
@@ -75,6 +90,11 @@
       return {
         loading: true,
         loadingData: false,
+        makingTransaction: false,
+        trx: {
+          hash: '',
+          link: '',
+        },
         token: {
           name: '',
           symbol: '',
@@ -83,6 +103,7 @@
           logo: '',
         },
         account: {
+          isMember: false,
           address: '',
           memberId: 0,
           member: null,
@@ -150,9 +171,9 @@
             this.account.address = this.web3.eth.accounts[0];
           }
 
-          const isMember = await this.promisify(this.instances.dao.isMember, this.account.address);
+          this.account.isMember = await this.promisify(this.instances.dao.isMember, this.account.address);
 
-          if (isMember) {
+          if (this.account.isMember) {
             const struct = await this.promisify(this.instances.dao.getMemberByAddress, this.account.address);
             this.account.member = this.formatStructure(struct);
           }
@@ -162,6 +183,29 @@
           console.log(e); // eslint-disable-line no-console
           this.loadingData = false;
           alert('Some error occurred.');
+        }
+      },
+      async join () {
+        try {
+          this.makingTransaction = true;
+
+          this.web3.eth.sendTransaction({
+              value: 0,
+              from: this.account.address,
+              to: this.instances.dao.address,
+            },
+            (err, trxHash) => {
+              if (!err) {
+                this.trx.hash = trxHash;
+                this.trx.link = this.network.current.etherscanLink + '/tx/' + this.trx.hash;
+              } else {
+                alert('Some error occurred. Maybe you rejected the transaction or you have MetaMask locked!');
+              }
+            },
+          );
+        } catch (e) {
+          console.log(e);
+          alert('Cannot connect. Please verify that you have MetaMask installed and unlocked.');
         }
       },
     },
