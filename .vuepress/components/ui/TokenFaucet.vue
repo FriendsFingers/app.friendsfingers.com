@@ -246,7 +246,7 @@
         },
       },
     },
-    async mounted () {
+    mounted () {
       const referral = friends[this.getParam('friend')];
 
       if (referral) {
@@ -255,10 +255,10 @@
         this.referral.address = this.getParam('referral') || '';
       }
 
-      await this.initDapp();
+      this.initDapp();
     },
     methods: {
-      async initDapp () {
+      initDapp () {
         try {
           this.initToken();
           this.initFaucet();
@@ -287,8 +287,7 @@
         this.loading = false;
       },
       async enable () {
-        await this.$store.dispatch('connect');
-        await this.getAccountData();
+        this.$store.dispatch('connect');
       },
       async getTokenData () {
         try {
@@ -365,7 +364,7 @@
         }
       },
       getTokens () {
-        this.$validator.validateAll().then(async (result) => {
+        this.$validator.validateAll().then((result) => {
           if (result) {
             this.makingTransaction = true;
 

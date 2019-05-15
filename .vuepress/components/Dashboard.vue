@@ -127,11 +127,11 @@
         },
       },
     },
-    async mounted () {
-      await this.initDapp();
+    mounted () {
+      this.initDapp();
     },
     methods: {
-      async initDapp () {
+      initDapp () {
         try {
           this.initToken();
           this.initDao();
@@ -149,8 +149,7 @@
         this.loading = false;
       },
       async enable () {
-        await this.$store.dispatch('connect');
-        await this.getAccountData();
+        this.$store.dispatch('connect');
       },
       async getTokenData () {
         try {
@@ -185,7 +184,7 @@
           alert('Some error occurred.');
         }
       },
-      async join () {
+      join () {
         try {
           this.makingTransaction = true;
 
@@ -204,7 +203,7 @@
             },
           );
         } catch (e) {
-          console.log(e);
+          console.log(e); // eslint-disable-line no-console
           alert('Cannot connect. Please verify that you have MetaMask installed and unlocked.');
         }
       },

@@ -53,9 +53,11 @@ export default {
     },
   },
   getters: {
+    /*
     address (state) {
       return state.address;
     },
+    */
     network (state) {
       return state.network;
     },
@@ -67,13 +69,15 @@ export default {
     },
   },
   mutations: {
+    /*
     setAddress (state, address) {
       localStorage.setItem('address', address);
       state.address = address;
     },
+    */
   },
   actions: {
-    async init ({ state, commit }) {
+    init ({ state, commit }) {
       state.currentNetwork = state.network.default;
       state.network.current = state.network.list[state.currentNetwork];
 
@@ -84,7 +88,7 @@ export default {
       }
     },
     load ({ commit }) {
-      commit('setAddress', localStorage.getItem('address') || null);
+      // commit('setAddress', localStorage.getItem('address') || null);
     },
     initWeb3 ({ state, commit }, checkWeb3) {
       if (!state.network.list.hasOwnProperty(state.currentNetwork)) {
@@ -115,11 +119,14 @@ export default {
 
             if (netId !== state.network.list[state.currentNetwork].id) {
               state.network.current = state.network.list[state.network.map[netId]];
-              await this.dispatch('initWeb3', false);
+              return this.dispatch('initWeb3', false);
             }
 
-            state.metamask.address = state.web3.eth.accounts[0] || '';
-            commit('setAddress', state.metamask.address);
+            if (!state.legacy) {
+              state.metamask.address = state.web3Provider.selectedAddress || '';
+            } else {
+              state.metamask.address = state.web3.eth.accounts[0] || '';
+            }
 
             resolve();
           });
@@ -137,19 +144,18 @@ export default {
       try {
         if (!state.legacy) {
           await state.web3Provider.enable();
+
+          document.location.reload();
+        } else {
+          state.metamask.address = state.web3.eth.accounts[0] || '';
         }
-
-        state.metamask.address = state.web3.eth.accounts[0] || '';
-
-        commit('setAddress', state.metamask.address);
       } catch (e) {
         console.log(e); // eslint-disable-line no-console
         alert('Cannot connect. Please verify that you have MetaMask installed and unlocked.');
       }
     },
     disconnect ({ commit }) {
-      commit('setAddress', '');
-      document.location.href = '/';
+      console.log('TODO'); // eslint-disable-line no-console
     },
   },
 };

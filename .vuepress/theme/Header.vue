@@ -19,8 +19,8 @@
             </b-navbar-nav>
 
             <b-navbar-nav class="ml-auto">
-                <b-nav-item v-if="address === ''" :to="$withBase('/dashboard')">Connect</b-nav-item>
-                <b-nav-item-dropdown v-else :text="address | truncate(12)" right>
+                <b-nav-item v-if="metamask.address === ''" :to="$withBase('/dashboard')">Connect</b-nav-item>
+                <b-nav-item-dropdown v-else :text="metamask.address | truncate(12)" right>
                     <b-dropdown-item :to="$withBase('/dashboard')">Your profile</b-dropdown-item>
                     <b-dropdown-item @click="disconnect()">Disconnect</b-dropdown-item>
                 </b-nav-item-dropdown>
@@ -38,11 +38,6 @@
       utils,
     ],
     computed: {
-      address: {
-        get () {
-          return this.$store.getters.address;
-        },
-      },
       network: {
         get () {
           return this.$store.getters.network;
@@ -54,20 +49,22 @@
         },
       },
     },
-    async mounted () {
-      if (!this.metamask.installed) {
-        this.makeToast(
-          'No Ethereum Provider',
-          `Please install MetaMask ${(this.isMobile()) ? 'or a mobile browser like Trust Wallet or Coinbase Wallet' : ''} to use DApp.`,
-          'warning',
-        );
-      } else if (this.metamask.netId !== this.network.current.id) {
-        this.makeToast(
-          'Wrong Network',
-          `You are on the wrong Network. Please switch your Ethereum Provider on ${this.network.current.name}.`,
-          'warning',
-        );
-      }
+    created () {
+      setTimeout(() => {
+        if (!this.metamask.installed) {
+          this.makeToast(
+            'No Ethereum Provider',
+            `Please install MetaMask ${(this.isMobile()) ? 'or a mobile browser like Trust Wallet or Coinbase Wallet' : ''} to use DApp.`,
+            'warning',
+          );
+        } else if (this.metamask.netId !== this.network.current.id) {
+          this.makeToast(
+            'Wrong Network',
+            `You are on the wrong Network. Please switch your Ethereum Provider on ${this.network.current.name}.`,
+            'warning',
+          );
+        }
+      }, 2000);
     },
     methods: {
       disconnect () {

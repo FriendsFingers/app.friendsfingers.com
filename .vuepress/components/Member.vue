@@ -51,13 +51,13 @@
         },
       },
     },
-    async mounted () {
+    mounted () {
       this.memberId = this.getParam('id');
 
-      await this.initDapp();
+      this.initDapp();
     },
     methods: {
-      async initDapp () {
+      initDapp () {
         try {
           this.initToken();
           this.initDao();
