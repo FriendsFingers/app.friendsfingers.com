@@ -9,7 +9,8 @@
     "parser": "babel-eslint"
   },
   "plugins": [
-    "promise"
+    "promise",
+    "vue"
   ],
   "env": {
     "browser" : true,
@@ -39,7 +40,6 @@
     "eol-last": ["error", "always"],
     "eqeqeq": ["error", "smart"],
     "generator-star-spacing": ["error", "before"],
-    "indent": ["error", 2],
     "linebreak-style": ["error", "unix"],
     "max-len": ["error", 120, 2],
     "no-debugger": "off",
@@ -58,6 +58,10 @@
     "space-before-function-paren": ["error", "always"],
 
     "promise/always-return": "off",
-    "promise/avoid-new": "off"
+    "promise/avoid-new": "off",
+
+    "vue/script-indent": ["warn", 2, {
+      "baseIndent": 1
+    }]
   }
 }

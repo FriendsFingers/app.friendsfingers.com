@@ -54,7 +54,7 @@
         if (!this.metamask.installed) {
           this.makeToast(
             'No Ethereum Provider',
-            `Please install MetaMask ${(this.isMobile()) ? 'or a mobile browser like Trust Wallet or Coinbase Wallet' : ''} to use DApp.`,
+            `Please install MetaMask ${(this.isMobile()) ? 'or a mobile browser like Trust Wallet or Coinbase Wallet' : ''} to use DApp.`, // eslint-disable-line max-len
             'warning',
           );
         } else if (this.metamask.netId !== this.network.current.id) {

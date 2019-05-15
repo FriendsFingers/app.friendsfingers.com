@@ -188,7 +188,8 @@
         try {
           this.makingTransaction = true;
 
-          this.web3.eth.sendTransaction({
+          this.web3.eth.sendTransaction(
+            {
               value: 0,
               from: this.account.address,
               to: this.instances.dao.address,
