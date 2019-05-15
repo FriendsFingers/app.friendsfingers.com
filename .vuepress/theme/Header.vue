@@ -30,12 +30,12 @@
 </template>
 
 <script>
-  import browser from '../mixins/browser';
+  import utils from '../mixins/utils.mixin';
 
   export default {
     name: 'Header',
     mixins: [
-      browser,
+      utils,
     ],
     computed: {
       address: {

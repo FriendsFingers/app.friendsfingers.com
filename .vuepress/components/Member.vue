@@ -21,13 +21,13 @@
 </template>
 
 <script>
-  import browser from '../mixins/browser';
+  import utils from '../mixins/utils.mixin';
   import dappMixin from '../mixins/dapp.mixin';
 
   export default {
     name: 'Member',
     mixins: [
-      browser,
+      utils,
       dappMixin,
     ],
     data () {

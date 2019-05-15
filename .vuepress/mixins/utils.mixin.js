@@ -28,9 +28,6 @@ export default {
     isMobile () {
       return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     },
-    print () {
-      window.print();
-    },
     makeToast (title, text, variant = null) {
       this.$bvToast.toast(text, {
         title: title,

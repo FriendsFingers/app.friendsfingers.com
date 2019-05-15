@@ -176,7 +176,7 @@
 </template>
 
 <script>
-  import browser from '../../mixins/browser';
+  import utils from '../../mixins/utils.mixin';
   import dappMixin from '../../mixins/dapp.mixin';
 
   import friends from '../../content/friends';
@@ -184,7 +184,7 @@
   export default {
     name: 'TokenFaucet',
     mixins: [
-      browser,
+      utils,
       dappMixin,
     ],
     data () {
