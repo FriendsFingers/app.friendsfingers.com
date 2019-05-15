@@ -7,7 +7,7 @@
                         <ui--loader :loading="true"></ui--loader>
                     </b-card>
                 </template>
-                <template v-else header="Your account" class="mb-3">
+                <template v-else>
                     <template v-if="metamask.address">
                         <template v-if="!loadingData">
                             <template v-if="account.member">
