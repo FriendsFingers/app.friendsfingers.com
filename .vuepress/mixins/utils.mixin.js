@@ -26,7 +26,11 @@ export default {
       });
     },
     isMobile () {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      try {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      } catch (e) {
+        return false;
+      }
     },
     makeToast (title, text, variant = null) {
       this.$bvToast.toast(text, {
