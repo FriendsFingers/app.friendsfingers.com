@@ -124,6 +124,15 @@ export default {
 
             if (!state.legacy) {
               state.metamask.address = state.web3Provider.selectedAddress || '';
+
+              state.web3Provider.on('accountsChanged', function (accounts) {
+                document.location.reload();
+              });
+
+              state.web3Provider.on('networkChanged', function (network) {
+                document.location.reload();
+              });
+
             } else {
               state.metamask.address = state.web3.eth.accounts[0] || '';
             }
