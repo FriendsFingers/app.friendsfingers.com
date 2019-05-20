@@ -4,17 +4,17 @@
             <b-card v-if="!loading"
                     header="Your account"
                     class="mb-3">
-                <template v-if="metamask.address">
+                <template v-if="dapp.metamask.address">
                     <template v-if="!makingTransaction && !loadingData">
                         <b>Account:</b>
-                        <b-link :href="`${network.current.etherscanLink}/address/${account.address}`"
+                        <b-link :href="`${dapp.network.current.etherscanLink}/address/${account.address}`"
                                 target="_blank">{{ account.address }}
                         </b-link>
                         <br>
 
                         <template v-if="account.referral !== zeroAddress">
                             <b>You have been invited by:</b>
-                            <b-link :href="`${network.current.etherscanLink}/address/${account.referral}`"
+                            <b-link :href="`${dapp.network.current.etherscanLink}/address/${account.referral}`"
                                     target="_blank">{{ account.referral }}
                             </b-link>
                             <br>
@@ -121,8 +121,10 @@
                     </template>
                 </template>
                 <template v-else>
-                    <b-alert show v-if="!metamask.installed || metamask.netId !== network.current.id" variant="warning">
-                        <template v-if="!metamask.installed">
+                    <b-alert show
+                             v-if="!dapp.metamask.installed || dapp.metamask.netId !== dapp.network.current.id"
+                             variant="warning">
+                        <template v-if="!dapp.metamask.installed">
                             Install
                             <b-link href="https://metamask.io/" target="_blank">MetaMask</b-link>
                             or a mobile browser like
@@ -131,15 +133,15 @@
                             <b-link href="https://wallet.coinbase.com/" target="_blank">Coinbase Wallet</b-link>
                             to get your Tokens.
                         </template>
-                        <template v-else-if="metamask.netId !== network.current.id">
+                        <template v-else-if="dapp.metamask.netId !== dapp.network.current.id">
                             You are on the wrong Network.<br>
-                            Please switch your Ethereum Provider on <b>{{ network.current.name }}</b>.
+                            Please switch your Ethereum Provider on <b>{{ dapp.network.current.name }}</b>.
                         </template>
                     </b-alert>
                     <p v-else class="card-text">
                         <b-btn variant="primary"
                                size="lg"
-                               :disabled="!metamask.installed || metamask.netId !== network.current.id"
+                               :disabled="!dapp.metamask.installed || dapp.metamask.netId !== dapp.network.current.id"
                                @click="enable">
                             Connect
                         </b-btn>
@@ -177,7 +179,6 @@
 
 <script>
   import utils from '../../mixins/utils.mixin';
-  import dappMixin from '../../mixins/dapp.mixin';
 
   import friends from '../../content/friends';
 
@@ -185,7 +186,6 @@
     name: 'TokenFaucet',
     mixins: [
       utils,
-      dappMixin,
     ],
     data () {
       return {
@@ -230,19 +230,9 @@
       };
     },
     computed: {
-      network: {
+      dapp: {
         get () {
-          return this.$store.getters.network;
-        },
-      },
-      metamask: {
-        get () {
-          return this.$store.getters.metamask;
-        },
-      },
-      web3: {
-        get () {
-          return this.$store.getters.web3;
+          return this.$store.getters.dapp;
         },
       },
     },
@@ -260,8 +250,8 @@
     methods: {
       initDapp () {
         try {
-          this.initToken();
-          this.initFaucet();
+          this.$store.dispatch('initToken');
+          this.$store.dispatch('initFaucet');
 
           this.ready();
         } catch (e) {
@@ -276,12 +266,12 @@
 
         this.$validator.extend('eth_address', {
           getMessage: field => 'Insert a valid Ethereum address.',
-          validate: value => this.web3.isAddress(value),
+          validate: value => this.dapp.web3.isAddress(value),
         });
 
         this.$validator.extend('not_yourself', {
           getMessage: field => 'You can\'t refer yourself.',
-          validate: value => value.toLowerCase() !== this.metamask.address.toLowerCase(),
+          validate: value => value.toLowerCase() !== this.dapp.metamask.address.toLowerCase(),
         });
 
         this.loading = false;
@@ -291,9 +281,9 @@
       },
       async getTokenData () {
         try {
-          this.token.name = await this.promisify(this.instances.token.name);
-          this.token.symbol = await this.promisify(this.instances.token.symbol);
-          this.token.link = this.network.current.etherscanLink + '/token/' + this.instances.token.address;
+          this.token.name = await this.promisify(this.dapp.instances.token.name);
+          this.token.symbol = await this.promisify(this.dapp.instances.token.symbol);
+          this.token.link = this.dapp.network.current.etherscanLink + '/token/' + this.dapp.instances.token.address;
           this.token.logo = this.$withBase('/assets/images/logo/shaka_logo_white.png');
         } catch (e) {
           console.log(e); // eslint-disable-line no-console
@@ -304,16 +294,16 @@
       async getFaucetData () {
         try {
           this.faucet.dailyRate = parseFloat(
-            this.web3.fromWei(await this.promisify(this.instances.faucet.dailyRate)),
+            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.faucet.dailyRate)),
           );
           this.faucet.referralTokens = parseFloat(
-            this.web3.fromWei(await this.promisify(this.instances.faucet.referralTokens)),
+            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.faucet.referralTokens)),
           );
           this.faucet.remainingTokens = parseFloat(
-            this.web3.fromWei(await this.promisify(this.instances.faucet.remainingTokens)),
+            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.faucet.remainingTokens)),
           );
           this.faucet.distributedTokens = parseFloat(
-            this.web3.fromWei(await this.promisify(this.instances.faucet.totalDistributedTokens)),
+            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.faucet.totalDistributedTokens)),
           );
 
           this.faucet.max = this.faucet.distributedTokens + this.faucet.remainingTokens;
@@ -328,23 +318,27 @@
       async getAccountData () {
         this.loadingData = true;
         try {
-          if (this.metamask.address) {
-            this.account.address = this.web3.eth.accounts[0];
-            this.account.referral = await this.promisify(this.instances.faucet.getReferral, this.account.address);
+          if (this.dapp.metamask.address) {
+            this.account.address = this.dapp.web3.eth.accounts[0];
+            this.account.referral = await this.promisify(this.dapp.instances.faucet.getReferral, this.account.address);
             this.account.referredAddresses = await this.promisify(
-              this.instances.faucet.getReferredAddresses, this.account.address,
+              this.dapp.instances.faucet.getReferredAddresses, this.account.address,
             );
             this.account.receivedTokens = parseFloat(
-              this.web3.fromWei(await this.promisify(this.instances.faucet.receivedTokens, this.account.address)),
+              this.dapp.web3.fromWei(await this.promisify(
+                this.dapp.instances.faucet.receivedTokens, this.account.address)
+              ),
             );
             this.account.earnedByReferral = parseFloat(
-              this.web3.fromWei(await this.promisify(this.instances.faucet.earnedByReferral, this.account.address)),
+              this.dapp.web3.fromWei(
+                await this.promisify(this.dapp.instances.faucet.earnedByReferral, this.account.address),
+              ),
             );
             this.account.lastUpdate = (
-              await this.promisify(this.instances.faucet.lastUpdate, this.account.address)
+              await this.promisify(this.dapp.instances.faucet.lastUpdate, this.account.address)
             ).valueOf() * 1000;
             this.account.nextClaimTime = (
-              await this.promisify(this.instances.faucet.nextClaimTime, this.account.address)
+              await this.promisify(this.dapp.instances.faucet.nextClaimTime, this.account.address)
             ).valueOf() * 1000;
 
             this.account.share.link = window.location.origin + this.$withBase(
@@ -368,7 +362,7 @@
           if (result) {
             this.makingTransaction = true;
 
-            this.instances.faucet.getTokensWithReferral(
+            this.dapp.instances.faucet.getTokensWithReferral(
               this.referral.address,
               {
                 from: this.account.address,
@@ -376,7 +370,7 @@
               (err, trxHash) => {
                 if (!err) {
                   this.trx.hash = trxHash;
-                  this.trx.link = this.network.current.etherscanLink + '/tx/' + this.trx.hash;
+                  this.trx.link = this.dapp.network.current.etherscanLink + '/tx/' + this.trx.hash;
                 } else {
                   alert('Some error occurred. Maybe you rejected the transaction or you have MetaMask locked!');
                 }

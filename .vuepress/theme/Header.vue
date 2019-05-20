@@ -19,8 +19,8 @@
             </b-navbar-nav>
 
             <b-navbar-nav class="ml-auto">
-                <b-nav-item v-if="metamask.address === ''" :to="$withBase('/dashboard')">Connect</b-nav-item>
-                <b-nav-item-dropdown v-else :text="metamask.address | truncate(12)" right>
+                <b-nav-item v-if="dapp.metamask.address === ''" :to="$withBase('/dashboard')">Connect</b-nav-item>
+                <b-nav-item-dropdown v-else :text="dapp.metamask.address | truncate(12)" right>
                     <b-dropdown-item :to="$withBase('/dashboard')">Your profile</b-dropdown-item>
                     <b-dropdown-item @click="disconnect()">Disconnect</b-dropdown-item>
                 </b-nav-item-dropdown>
@@ -38,29 +38,24 @@
       utils,
     ],
     computed: {
-      network: {
+      dapp: {
         get () {
-          return this.$store.getters.network;
-        },
-      },
-      metamask: {
-        get () {
-          return this.$store.getters.metamask;
+          return this.$store.getters.dapp;
         },
       },
     },
     created () {
       setTimeout(() => {
-        if (!this.metamask.installed) {
+        if (!this.dapp.metamask.installed) {
           this.makeToast(
             'No Ethereum Provider',
             `Please install MetaMask ${(this.isMobile()) ? 'or a mobile browser like Trust Wallet or Coinbase Wallet' : ''} to use DApp.`, // eslint-disable-line max-len
             'warning',
           );
-        } else if (this.metamask.netId !== this.network.current.id) {
+        } else if (this.dapp.metamask.netId !== this.dapp.network.current.id) {
           this.makeToast(
             'Wrong Network',
-            `You are on the wrong Network. Please switch your Ethereum Provider on ${this.network.current.name}.`,
+            `You are on the wrong Network. Please switch your Ethereum Provider on ${this.dapp.network.current.name}.`,
             'warning',
           );
         }

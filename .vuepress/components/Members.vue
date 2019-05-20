@@ -12,13 +12,11 @@
 
 <script>
   import utils from '../mixins/utils.mixin';
-  import dappMixin from '../mixins/dapp.mixin';
 
   export default {
     name: 'Members',
     mixins: [
       utils,
-      dappMixin,
     ],
     data () {
       return {
@@ -33,8 +31,8 @@
     methods: {
       initDapp () {
         try {
-          this.initToken();
-          this.initDao();
+          this.$store.dispatch('initToken');
+          this.$store.dispatch('initDao');
 
           this.ready();
         } catch (e) {
@@ -43,12 +41,12 @@
         }
       },
       async ready () {
-        this.membersNumber = parseInt((await this.promisify(this.instances.dao.membersNumber)).valueOf());
+        this.membersNumber = parseInt((await this.promisify(this.dapp.instances.dao.membersNumber)).valueOf());
 
         await this.getMember(1);
       },
       async getMember (memberId) {
-        const struct = await this.promisify(this.instances.dao.getMemberById, memberId);
+        const struct = await this.promisify(this.dapp.instances.dao.getMemberById, memberId);
         const member = this.formatStructure(struct);
 
         this.memberList.push(member);

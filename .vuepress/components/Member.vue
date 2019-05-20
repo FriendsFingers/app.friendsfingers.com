@@ -7,8 +7,8 @@
                         <ui--loader :loading="true"></ui--loader>
                     </b-card>
                 </template>
-                <template v-else-if="member">
-                    <ui--member-details :member="member" :token="token" :network="network"></ui--member-details>
+                <template v-else-if="account.member">
+                    <ui--member-details :account="account" :token="token"></ui--member-details>
                 </template>
                 <template v-else>
                     <b-card-body>
@@ -22,18 +22,15 @@
 
 <script>
   import utils from '../mixins/utils.mixin';
-  import dappMixin from '../mixins/dapp.mixin';
 
   export default {
     name: 'Member',
     mixins: [
       utils,
-      dappMixin,
     ],
     data () {
       return {
         loading: true,
-        memberId: 0,
         token: {
           name: '',
           symbol: '',
@@ -41,26 +38,31 @@
           link: '',
           logo: '',
         },
-        member: null,
+        account: {
+          isMember: false,
+          memberId: 0,
+          tokenBalance: 0,
+          member: null,
+        },
       };
     },
     computed: {
-      network: {
+      dapp: {
         get () {
-          return this.$store.getters.network;
+          return this.$store.getters.dapp;
         },
       },
     },
     mounted () {
-      this.memberId = this.getParam('id');
+      this.account.memberId = this.getParam('id');
 
       this.initDapp();
     },
     methods: {
       initDapp () {
         try {
-          this.initToken();
-          this.initDao();
+          this.$store.dispatch('initToken');
+          this.$store.dispatch('initDao');
 
           this.ready();
         } catch (e) {
@@ -74,9 +76,9 @@
       },
       async getTokenData () {
         try {
-          this.token.name = await this.promisify(this.instances.token.name);
-          this.token.symbol = await this.promisify(this.instances.token.symbol);
-          this.token.link = this.network.current.etherscanLink + '/token/' + this.instances.token.address;
+          this.token.name = await this.promisify(this.dapp.instances.token.name);
+          this.token.symbol = await this.promisify(this.dapp.instances.token.symbol);
+          this.token.link = this.dapp.network.current.etherscanLink + '/token/' + this.dapp.instances.token.address;
           this.token.logo = this.$withBase('/assets/images/logo/shaka_logo_white.png');
         } catch (e) {
           console.log(e); // eslint-disable-line no-console
@@ -85,8 +87,16 @@
         }
       },
       async getMember () {
-        const struct = await this.promisify(this.instances.dao.getMemberById, this.memberId);
-        this.member = this.formatStructure(struct);
+        const struct = await this.promisify(this.dapp.instances.dao.getMemberById, this.account.memberId);
+        this.account.member = this.formatStructure(struct);
+
+        if (this.account.member) {
+          this.account.tokenBalance = parseFloat(
+            this.dapp.web3.fromWei(
+              await this.promisify(this.dapp.instances.token.balanceOf, this.account.member.address),
+            ),
+          );
+        }
 
         this.loading = false;
       },

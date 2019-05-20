@@ -8,17 +8,16 @@
                     </b-card>
                 </template>
                 <template v-else>
-                    <template v-if="metamask.address">
+                    <template v-if="dapp.metamask.address">
                         <template v-if="!loadingData">
                             <template v-if="account.member">
-                                <ui--member-details :member="account.member" :token="token"
-                                                    :network="network"></ui--member-details>
+                                <ui--member-details :account="account" :token="token"></ui--member-details>
                             </template>
                             <template v-else>
                                 <b-card header="Your account" class="mb-3">
                                     <b>Account:</b>
-                                    <b-link :href="`${network.current.etherscanLink}/address/${account.address}`"
-                                            target="_blank">{{ account.address }}
+                                    <b-link :href="`${dapp.network.current.etherscanLink}/address/${dapp.metamask.address}`"
+                                            target="_blank">{{ dapp.metamask.address}}
                                     </b-link>
                                 </b-card>
                                 <b-card header="FriendsFingers DAO" class="mb-3">
@@ -44,9 +43,9 @@
                     </template>
                     <template v-else>
                         <b-card header="Your account" class="mb-3">
-                            <b-alert show v-if="!metamask.installed || metamask.netId !== network.current.id"
-                                     variant="warning">
-                                <template v-if="!metamask.installed">
+                            <b-alert v-if="!dapp.metamask.installed || dapp.metamask.netId !== dapp.network.current.id"
+                                     variant="warning" show>
+                                <template v-if="!dapp.metamask.installed">
                                     Install
                                     <b-link href="https://metamask.io/" target="_blank">MetaMask</b-link>
                                     or a mobile browser like
@@ -55,15 +54,15 @@
                                     <b-link href="https://wallet.coinbase.com/" target="_blank">Coinbase Wallet</b-link>
                                     to get your Tokens.
                                 </template>
-                                <template v-else-if="metamask.netId !== network.current.id">
+                                <template v-else-if="dapp.metamask.netId !== dapp.network.current.id">
                                     You are on the wrong Network.<br>
-                                    Please switch your Ethereum Provider on <b>{{ network.current.name }}</b>.
+                                    Please switch your Ethereum Provider on <b>{{ dapp.network.current.name }}</b>.
                                 </template>
                             </b-alert>
                             <p v-else class="card-text">
                                 <b-btn variant="primary"
                                        size="lg"
-                                       :disabled="!metamask.installed || metamask.netId !== network.current.id"
+                                       :disabled="!dapp.metamask.installed || dapp.metamask.netId !== dapp.network.current.id"
                                        @click="enable">
                                     Connect
                                 </b-btn>
@@ -78,13 +77,11 @@
 
 <script>
   import utils from '../mixins/utils.mixin';
-  import dappMixin from '../mixins/dapp.mixin';
 
   export default {
     name: 'Dashboard',
     mixins: [
       utils,
-      dappMixin,
     ],
     data () {
       return {
@@ -104,26 +101,16 @@
         },
         account: {
           isMember: false,
-          address: '',
           memberId: 0,
+          tokenBalance: 0,
           member: null,
         },
       };
     },
     computed: {
-      network: {
+      dapp: {
         get () {
-          return this.$store.getters.network;
-        },
-      },
-      metamask: {
-        get () {
-          return this.$store.getters.metamask;
-        },
-      },
-      web3: {
-        get () {
-          return this.$store.getters.web3;
+          return this.$store.getters.dapp;
         },
       },
     },
@@ -133,8 +120,8 @@
     methods: {
       initDapp () {
         try {
-          this.initToken();
-          this.initDao();
+          this.$store.dispatch('initToken');
+          this.$store.dispatch('initDao');
 
           this.ready();
         } catch (e) {
@@ -153,9 +140,9 @@
       },
       async getTokenData () {
         try {
-          this.token.name = await this.promisify(this.instances.token.name);
-          this.token.symbol = await this.promisify(this.instances.token.symbol);
-          this.token.link = this.network.current.etherscanLink + '/token/' + this.instances.token.address;
+          this.token.name = await this.promisify(this.dapp.instances.token.name);
+          this.token.symbol = await this.promisify(this.dapp.instances.token.symbol);
+          this.token.link = this.dapp.network.current.etherscanLink + '/token/' + this.dapp.instances.token.address;
           this.token.logo = this.$withBase('/assets/images/logo/shaka_logo_white.png');
         } catch (e) {
           console.log(e); // eslint-disable-line no-console
@@ -166,16 +153,19 @@
       async getAccountData () {
         this.loadingData = true;
         try {
-          if (this.metamask.address) {
-            this.account.address = this.web3.eth.accounts[0];
-          }
-
-          this.account.isMember = await this.promisify(this.instances.dao.isMember, this.account.address);
+          this.account.isMember = await this.promisify(this.dapp.instances.dao.isMember, this.dapp.metamask.address);
 
           if (this.account.isMember) {
-            const struct = await this.promisify(this.instances.dao.getMemberByAddress, this.account.address);
+            const struct = await this.promisify(this.dapp.instances.dao.getMemberByAddress, this.dapp.metamask.address);
             this.account.member = this.formatStructure(struct);
+            this.account.memberId = this.account.member.id;
           }
+
+          this.account.tokenBalance = parseFloat(
+            this.dapp.web3.fromWei(
+              await this.promisify(this.dapp.instances.token.balanceOf, this.dapp.metamask.address),
+            ),
+          );
 
           this.loadingData = false;
         } catch (e) {
@@ -188,16 +178,16 @@
         try {
           this.makingTransaction = true;
 
-          this.web3.eth.sendTransaction(
+          this.dapp.web3.eth.sendTransaction(
             {
               value: 0,
-              from: this.account.address,
-              to: this.instances.dao.address,
+              from: this.dapp.metamask.address,
+              to: this.dapp.instances.dao.address,
             },
             (err, trxHash) => {
               if (!err) {
                 this.trx.hash = trxHash;
-                this.trx.link = this.network.current.etherscanLink + '/tx/' + this.trx.hash;
+                this.trx.link = this.dapp.network.current.etherscanLink + '/tx/' + this.trx.hash;
               } else {
                 alert('Some error occurred. Maybe you rejected the transaction or you have MetaMask locked!');
               }

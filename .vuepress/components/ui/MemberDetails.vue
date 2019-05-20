@@ -1,25 +1,83 @@
 <template>
     <b-row>
-        <b-col md="4" class="mb-4">
-            <b-card no-body class="text-center">
-                <ui--member-image :member="member"></ui--member-image>
-            </b-card>
+        <b-col v-if="trx.hash" md="12" class="mb-2">
+            <b-alert show variant="success" class="mt-3">
+                Last transaction:
+                <b-link :href="trx.link" target="_blank">{{ trx.hash }}</b-link>
+            </b-alert>
         </b-col>
-        <b-col md="8" class="mb-4">
+
+        <b-col md="4" class="mb-4">
             <b-list-group>
-                <b-list-group-item>ID: {{ member.id }}</b-list-group-item>
-                <b-list-group-item>Address:
-                    <b-link :href="`${network.current.etherscanLink}/address/${member.address}`"
-                            target="_blank">
-                        {{ member.address }}
-                    </b-link>
+                <b-list-group-item>Member <b>#{{ account.member.id }}</b></b-list-group-item>
+                <b-list-group-item>Balance: <b>{{ account.tokenBalance }} {{ token.symbol }}</b></b-list-group-item>
+                <b-list-group-item>
+                    Staked: <b>{{ account.member.stakedTokens }} {{ token.symbol }}</b>
                 </b-list-group-item>
-                <b-list-group-item>Staked tokens: {{ member.stakedTokens }} {{ token.symbol }}
-                </b-list-group-item>
-                <b-list-group-item>Approved: {{ member.approved ? 'Yes' : 'No' }}</b-list-group-item>
-                <b-list-group-item>Member since: {{ member.creationDate | formatLocaleDate }}
+                <b-list-group-item>Approved: <b>{{ account.member.approved ? 'Yes' : 'No' }}</b></b-list-group-item>
+                <b-list-group-item>
+                    <small>Since: {{ account.member.creationDate | formatLocaleDate }}</small>
                 </b-list-group-item>
             </b-list-group>
+
+            <b-card v-if="account.member.address === dapp.metamask.address"
+                    :title="`Stake ${token.symbol}`"
+                    class="mt-4">
+                <b-form @submit.prevent="stake">
+                    <b-input-group>
+                        <b-form-input
+                                id="stakeAmount"
+                                name="stakeAmount"
+                                :disabled="makingTransaction"
+                                v-model.trim="stakeAmount"
+                                v-validate="{ required: true, numeric: true, min_value: 1, max_value: account.tokenBalance }"
+                                data-vv-as="stake amount"
+                                :class="{'is-invalid': errors.has('stakeAmount')}">
+                        </b-form-input>
+                        <b-input-group-append>
+                            <b-button :disabled="makingTransaction" type="submit" variant="primary">Stake</b-button>
+                        </b-input-group-append>
+                    </b-input-group>
+                    <small v-show="errors.has('stakeAmount')" class="text-danger">
+                        {{ errors.first('stakeAmount') }}
+                    </small>
+                </b-form>
+            </b-card>
+
+            <b-card v-if="account.member.address === dapp.metamask.address"
+                    :title="`Unstake ${token.symbol}`"
+                    class="mt-4">
+                <b-form @submit.prevent="unstake">
+                    <b-input-group>
+                        <b-form-input
+                                id="unstakeAmount"
+                                name="unstakeAmount"
+                                :disabled="makingTransaction"
+                                v-model.trim="unstakeAmount"
+                                v-validate="{ required: true, numeric: true, min_value: 1, max_value: account.member.stakedTokens }"
+                                data-vv-as="unstake amount"
+                                :class="{'is-invalid': errors.has('unstakeAmount')}">
+                        </b-form-input>
+                        <b-input-group-append>
+                            <b-button :disabled="makingTransaction" type="submit" variant="primary">Unstake</b-button>
+                        </b-input-group-append>
+                    </b-input-group>
+                    <small v-show="errors.has('unstakeAmount')" class="text-danger">
+                        {{ errors.first('unstakeAmount') }}
+                    </small>
+                </b-form>
+            </b-card>
+        </b-col>
+
+        <b-col md="8" class="mb-4">
+            <b-card class="text-center">
+                <ui--member-image :member="account.member"></ui--member-image>
+
+                <b-link :href="`${dapp.network.current.etherscanLink}/address/${account.member.address}`"
+                        target="_blank">
+                    {{ account.member.address }}
+                </b-link>
+            </b-card>
         </b-col>
     </b-row>
 </template>
@@ -28,9 +86,115 @@
   export default {
     name: 'MemberDetails',
     props: [
-      'network',
-      'member',
+      'account',
       'token',
     ],
+    data () {
+      return {
+        makingTransaction: false,
+        stakeAmount: '',
+        unstakeAmount: '',
+        trx: {
+          hash: '',
+          link: '',
+        },
+      };
+    },
+    computed: {
+      dapp: {
+        get () {
+          return this.$store.getters.dapp;
+        },
+      },
+    },
+    methods: {
+      stake () {
+        this.$validator.validate('stakeAmount').then((result) => {
+          if (result) {
+            if (!this.dapp.metamask.installed) {
+              alert('Please verify that you have MetaMask installed and unlocked.');
+              return;
+            }
+
+            if (this.dapp.metamask.netId !== this.dapp.network.current.id) {
+              alert(`You are on the wrong Network. Please switch MetaMask on ${this.dapp.network.current.name}.`);
+              return;
+            }
+
+            try {
+              this.makingTransaction = true;
+
+              this.dapp.instances.token.transferAndCall(
+                this.dapp.instances.dao.address,
+                this.dapp.web3.toWei(this.stakeAmount),
+                {
+                  from: this.dapp.metamask.address,
+                  to: this.token.address,
+                },
+                (err, trxHash) => {
+                  if (!err) {
+                    this.trx.hash = trxHash;
+                    this.trx.link = this.dapp.network.current.etherscanLink + '/tx/' + this.trx.hash;
+                  } else {
+                    alert('Some error occurred. Maybe you rejected the transaction or you have MetaMask locked!');
+                  }
+                  this.makingTransaction = false;
+                },
+              );
+            } catch (e) {
+              console.log(e); // eslint-disable-line no-console
+              alert('Cannot connect. Please verify that you have MetaMask installed and unlocked.');
+            }
+          }
+        }).catch((e) => {
+          console.log(e); // eslint-disable-line no-console
+          this.makingTransaction = false;
+          alert('Some error occurred.');
+        });
+      },
+      unstake () {
+        this.$validator.validate('unstakeAmount').then((result) => {
+          if (result) {
+            if (!this.dapp.metamask.installed) {
+              alert('Please verify that you have MetaMask installed and unlocked.');
+              return;
+            }
+
+            if (this.dapp.metamask.netId !== this.dapp.network.current.id) {
+              alert(`You are on the wrong Network. Please switch MetaMask on ${this.dapp.network.current.name}.`);
+              return;
+            }
+
+            try {
+              this.makingTransaction = true;
+
+              this.dapp.instances.dao.unstake(
+                this.dapp.web3.toWei(this.unstakeAmount),
+                {
+                  from: this.dapp.metamask.address,
+                  to: this.dapp.instances.dao.address,
+                },
+                (err, trxHash) => {
+                  if (!err) {
+                    this.trx.hash = trxHash;
+                    this.trx.link = this.dapp.network.current.etherscanLink + '/tx/' + this.trx.hash;
+                  } else {
+                    alert('Some error occurred. Maybe you rejected the transaction or you have MetaMask locked!');
+                  }
+                  this.makingTransaction = false;
+                },
+              );
+            } catch (e) {
+              console.log(e); // eslint-disable-line no-console
+              alert('Cannot connect. Please verify that you have MetaMask installed and unlocked.');
+            }
+          }
+        }).catch((e) => {
+          console.log(e); // eslint-disable-line no-console
+          this.makingTransaction = false;
+          alert('Some error occurred.');
+        });
+      },
+    },
   };
 </script>

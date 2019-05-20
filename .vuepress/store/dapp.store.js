@@ -1,54 +1,71 @@
-/* global __DEFAULT_NETWORK__ */
+/* global __DEFAULT_NETWORK__, __TOKEN_ADDRESS__, __FAUCET_ADDESS__, __DAO_ADDESS__ */
+
+import TokenArtifact from '../abi/BaseToken';
+import FaucetArtifact from '../abi/TokenFaucet';
+import DAOArtifact from '../abi/DAO';
 
 export default {
   state: {
     address: '',
     legacy: false,
-    web3: null,
+    currentNetwork: '',
     web3Provider: null,
-    metamask: {
-      address: '',
-      installed: false,
-      netId: null,
-    },
-    network: {
-      default: __DEFAULT_NETWORK__,
-      current: null,
-      map: {
-        1: 'mainnet',
-        3: 'ropsten',
-        4: 'rinkeby',
-        42: 'kovan',
+    dapp: {
+      web3: null,
+      metamask: {
+        address: '',
+        installed: false,
+        netId: null,
       },
-      list: {
-        mainnet: {
-          web3Provider: 'https://mainnet.infura.io/v3/fab631a7b8364aaaa7a8268d09c0f118',
-          etherscanLink: 'https://etherscan.io',
-          id: '1',
-          name: 'Main Ethereum Network',
-          color: 'success',
+      network: {
+        default: __DEFAULT_NETWORK__,
+        current: null,
+        map: {
+          1: 'mainnet',
+          3: 'ropsten',
+          4: 'rinkeby',
+          42: 'kovan',
         },
-        ropsten: {
-          web3Provider: 'https://ropsten.infura.io/v3/fab631a7b8364aaaa7a8268d09c0f118',
-          etherscanLink: 'https://ropsten.etherscan.io',
-          id: '3',
-          name: 'Ropsten Test Network',
-          color: 'danger',
+        list: {
+          mainnet: {
+            web3Provider: 'https://mainnet.infura.io/v3/fab631a7b8364aaaa7a8268d09c0f118',
+            etherscanLink: 'https://etherscan.io',
+            id: '1',
+            name: 'Main Ethereum Network',
+            color: 'success',
+          },
+          ropsten: {
+            web3Provider: 'https://ropsten.infura.io/v3/fab631a7b8364aaaa7a8268d09c0f118',
+            etherscanLink: 'https://ropsten.etherscan.io',
+            id: '3',
+            name: 'Ropsten Test Network',
+            color: 'danger',
+          },
+          rinkeby: {
+            web3Provider: 'https://rinkeby.infura.io/v3/fab631a7b8364aaaa7a8268d09c0f118',
+            etherscanLink: 'https://rinkeby.etherscan.io',
+            id: '4',
+            name: 'Rinkeby Test Network',
+            color: 'warning',
+          },
+          kovan: {
+            web3Provider: 'https://kovan.infura.io/v3/fab631a7b8364aaaa7a8268d09c0f118',
+            etherscanLink: 'https://kovan.etherscan.io',
+            id: '42',
+            name: 'Kovan Test Network',
+            color: 'primary',
+          },
         },
-        rinkeby: {
-          web3Provider: 'https://rinkeby.infura.io/v3/fab631a7b8364aaaa7a8268d09c0f118',
-          etherscanLink: 'https://rinkeby.etherscan.io',
-          id: '4',
-          name: 'Rinkeby Test Network',
-          color: 'warning',
-        },
-        kovan: {
-          web3Provider: 'https://kovan.infura.io/v3/fab631a7b8364aaaa7a8268d09c0f118',
-          etherscanLink: 'https://kovan.etherscan.io',
-          id: '42',
-          name: 'Kovan Test Network',
-          color: 'primary',
-        },
+      },
+      contracts: {
+        token: null,
+        faucet: null,
+        dao: null,
+      },
+      instances: {
+        token: null,
+        faucet: null,
+        dao: null,
       },
     },
   },
@@ -58,14 +75,8 @@ export default {
       return state.address;
     },
     */
-    network (state) {
-      return state.network;
-    },
-    metamask (state) {
-      return state.metamask;
-    },
-    web3 (state) {
-      return state.web3;
+    dapp (state) {
+      return state.dapp;
     },
   },
   mutations: {
@@ -78,8 +89,8 @@ export default {
   },
   actions: {
     init ({ state, commit }) {
-      state.currentNetwork = state.network.default;
-      state.network.current = state.network.list[state.currentNetwork];
+      state.currentNetwork = state.dapp.network.default;
+      state.dapp.network.current = state.dapp.network.list[state.currentNetwork];
 
       try {
         this.dispatch('initWeb3', true);
@@ -91,7 +102,7 @@ export default {
       // commit('setAddress', localStorage.getItem('address') || null);
     },
     initWeb3 ({ state, commit }, checkWeb3) {
-      if (!state.network.list.hasOwnProperty(state.currentNetwork)) {
+      if (!state.dapp.network.list.hasOwnProperty(state.currentNetwork)) {
         throw new Error(
           `Failed initializing network ${state.currentNetwork}. Allowed values are mainnet, ropsten and rinkeby.`,
         );
@@ -108,22 +119,22 @@ export default {
             state.legacy = true;
           }
 
-          state.web3 = new Web3(state.web3Provider);
-          state.metamask.installed = true;
-          state.web3.version.getNetwork(async (err, netId) => {
+          state.dapp.web3 = new Web3(state.web3Provider);
+          state.dapp.metamask.installed = true;
+          state.dapp.web3.version.getNetwork(async (err, netId) => {
             if (err) {
               console.log(err); // eslint-disable-line no-console
             }
 
-            state.metamask.netId = netId;
+            state.dapp.metamask.netId = netId;
 
-            if (netId !== state.network.list[state.currentNetwork].id) {
-              state.network.current = state.network.list[state.network.map[netId]];
+            if (netId !== state.dapp.network.list[state.currentNetwork].id) {
+              state.dapp.network.current = state.dapp.network.list[state.dapp.network.map[netId]];
               return this.dispatch('initWeb3', false);
             }
 
             if (!state.legacy) {
-              state.metamask.address = state.web3Provider.selectedAddress || '';
+              state.dapp.metamask.address = state.web3Provider.selectedAddress || '';
 
               state.web3Provider.on('accountsChanged', function (accounts) {
                 document.location.reload();
@@ -134,20 +145,34 @@ export default {
               });
 
             } else {
-              state.metamask.address = state.web3.eth.accounts[0] || '';
+              state.dapp.metamask.address = state.dapp.web3.eth.accounts[0] || '';
             }
 
             resolve();
           });
         } else {
           console.log('provided web3'); // eslint-disable-line no-console
-          state.network.current = state.network.list[state.currentNetwork];
-          state.web3Provider = new Web3.providers.HttpProvider(state.network.list[state.currentNetwork].web3Provider);
-          state.web3 = new Web3(state.web3Provider);
+          state.dapp.network.current = state.dapp.network.list[state.currentNetwork];
+          state.web3Provider = new Web3.providers.HttpProvider(
+            state.dapp.network.list[state.currentNetwork].web3Provider
+          );
+          state.dapp.web3 = new Web3(state.web3Provider);
 
           resolve();
         }
       });
+    },
+    initToken ({ state, commit }) {
+      state.dapp.contracts.token = state.dapp.web3.eth.contract(TokenArtifact.abi);
+      state.dapp.instances.token = state.dapp.contracts.token.at(__TOKEN_ADDRESS__);
+    },
+    initDao ({ state, commit }) {
+      state.dapp.contracts.dao = state.dapp.web3.eth.contract(DAOArtifact.abi);
+      state.dapp.instances.dao = state.dapp.contracts.dao.at(__DAO_ADDESS__);
+    },
+    initFaucet ({ state, commit }) {
+      state.dapp.contracts.faucet = state.dapp.web3.eth.contract(FaucetArtifact.abi);
+      state.dapp.instances.faucet = state.dapp.contracts.faucet.at(__FAUCET_ADDESS__);
     },
     async connect ({ state, commit }) {
       try {
@@ -156,7 +181,7 @@ export default {
 
           document.location.reload();
         } else {
-          state.metamask.address = state.web3.eth.accounts[0] || '';
+          state.dapp.metamask.address = state.dapp.web3.eth.accounts[0] || '';
         }
       } catch (e) {
         console.log(e); // eslint-disable-line no-console
