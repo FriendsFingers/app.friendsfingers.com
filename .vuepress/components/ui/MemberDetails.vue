@@ -7,21 +7,60 @@
             </b-alert>
         </b-col>
 
+        <b-col md="8" class="mb-4">
+            <b-card no-body class="text-center">
+                <b-card-body>
+                    <ui--member-image :member="account.member"></ui--member-image>
+                </b-card-body>
+
+                <b-card-footer>
+                    <b-link :href="`${dapp.network.current.etherscanLink}/address/${account.member.address}`"
+                            target="_blank">
+                        {{ account.member.address }}
+                    </b-link>
+                </b-card-footer>
+            </b-card>
+        </b-col>
+
         <b-col md="4" class="mb-4">
-            <b-list-group>
-                <b-list-group-item>Member <b>#{{ account.member.id }}</b></b-list-group-item>
-                <b-list-group-item>Balance: <b>{{ account.tokenBalance }} {{ token.symbol }}</b></b-list-group-item>
-                <b-list-group-item>
-                    Staked: <b>{{ account.member.stakedTokens }} {{ token.symbol }}</b>
-                </b-list-group-item>
-                <b-list-group-item>Approved: <b>{{ account.member.approved ? 'Yes' : 'No' }}</b></b-list-group-item>
-                <b-list-group-item>
+            <b-card no-body>
+                <b-card-header>
+                    Member #{{ account.member.id }}
+
+                    <div class="float-right">
+                        <b-badge v-if="account.member.approved"
+                                 v-b-tooltip.hover
+                                 title="Approved"
+                                 variant="success"
+                                 pill
+                                 class="p-1">
+                            <font-awesome-icon icon="check-circle"></font-awesome-icon>
+                        </b-badge>
+                        <b-badge v-else
+                                 v-b-tooltip.hover
+                                 title="Not approved"
+                                 variant="danger"
+                                 pill
+                                 class="p-1">
+                            <font-awesome-icon icon="exclamation-circle"></font-awesome-icon>
+                        </b-badge>
+                    </div>
+                </b-card-header>
+
+                <b-list-group flush>
+                    <b-list-group-item>Balance: <b>{{ account.tokenBalance }} {{ token.symbol }}</b></b-list-group-item>
+                    <b-list-group-item>
+                        Staked: <b>{{ account.member.stakedTokens }} {{ token.symbol }}</b>
+                    </b-list-group-item>
+                </b-list-group>
+
+                <b-card-footer>
                     <small>Since: {{ account.member.creationDate | formatLocaleDate }}</small>
-                </b-list-group-item>
-            </b-list-group>
+                </b-card-footer>
+            </b-card>
 
             <b-card v-if="account.member.address === dapp.metamask.address"
-                    :title="`Stake ${token.symbol}`"
+                    :header="`Stake ${token.symbol}`"
                     class="mt-4">
                 <b-form @submit.prevent="stake">
                     <b-input-group>
@@ -45,7 +84,7 @@
             </b-card>
 
             <b-card v-if="account.member.address === dapp.metamask.address"
-                    :title="`Unstake ${token.symbol}`"
+                    :header="`Unstake ${token.symbol}`"
                     class="mt-4">
                 <b-form @submit.prevent="unstake">
                     <b-input-group>
@@ -66,17 +105,6 @@
                         {{ errors.first('unstakeAmount') }}
                     </small>
                 </b-form>
-            </b-card>
-        </b-col>
-
-        <b-col md="8" class="mb-4">
-            <b-card class="text-center">
-                <ui--member-image :member="account.member"></ui--member-image>
-
-                <b-link :href="`${dapp.network.current.etherscanLink}/address/${account.member.address}`"
-                        target="_blank">
-                    {{ account.member.address }}
-                </b-link>
             </b-card>
         </b-col>
     </b-row>

@@ -5,7 +5,7 @@ import VeeValidate from 'vee-validate';
 import { VueSpinners } from '@saeris/vue-spinners';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faCheckCircle, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import {
   faTelegramPlane,
   faMediumM,
@@ -20,6 +20,8 @@ import {
 import dappStore from './store/dapp.store';
 
 library.add(faInfoCircle);
+library.add(faCheckCircle);
+library.add(faExclamationCircle);
 library.add(faTelegramPlane);
 library.add(faMediumM);
 library.add(faTwitter);
