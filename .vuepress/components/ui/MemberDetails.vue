@@ -52,6 +52,9 @@
                     <b-list-group-item>
                         Staked: <b>{{ account.member.stakedTokens }} {{ token.symbol }}</b>
                     </b-list-group-item>
+                    <b-list-group-item>
+                        Used: <b>{{ account.member.usedTokens }} {{ token.symbol }}</b>
+                    </b-list-group-item>
                 </b-list-group>
 
                 <b-card-footer>

@@ -12,7 +12,8 @@
                 </h1>
                 <h4 v-if="!loading" class="text-muted">
                     <b>{{ dao.membersNumber }}</b> DAO Members<br>
-                    have staked <b>{{ dao.totalStakedTokens }} {{ token.symbol }}</b>
+                    <b>{{ dao.totalStakedTokens }} {{ token.symbol }}</b> Staked<br>
+                    <b>{{ dao.totalUsedTokens }} {{ token.symbol }}</b> Used
                 </h4>
             </b-col>
         </b-row>
@@ -82,6 +83,7 @@
         dao: {
           membersNumber: 0,
           totalStakedTokens: 0,
+          totalUsedTokens: 0,
         },
       };
     },
@@ -123,6 +125,11 @@
           this.dao.totalStakedTokens = parseFloat(
             this.dapp.web3.fromWei(
               await this.promisify(this.dapp.instances.dao.totalStakedTokens),
+            ),
+          );
+          this.dao.totalUsedTokens = parseFloat(
+            this.dapp.web3.fromWei(
+              await this.promisify(this.dapp.instances.dao.totalUsedTokens),
             ),
           );
         } catch (e) {

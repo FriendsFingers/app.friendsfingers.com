@@ -178,9 +178,8 @@
         try {
           this.makingTransaction = true;
 
-          this.dapp.web3.eth.sendTransaction(
+          this.dapp.instances.dao.join(
             {
-              value: 0,
               from: this.dapp.metamask.address,
               to: this.dapp.instances.dao.address,
             },
@@ -191,10 +190,12 @@
               } else {
                 alert('Some error occurred. Maybe you rejected the transaction or you have MetaMask locked!');
               }
+              this.makingTransaction = false;
             },
           );
         } catch (e) {
           console.log(e); // eslint-disable-line no-console
+          this.makingTransaction = false;
           alert('Cannot connect. Please verify that you have MetaMask installed and unlocked.');
         }
       },

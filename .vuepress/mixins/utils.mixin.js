@@ -64,8 +64,9 @@ export default {
         fingerprint: this.formatFingerprint(struct[2]),
         creationDate: struct[3].valueOf() * 1000,
         stakedTokens: parseFloat(this.dapp.web3.fromWei(struct[4])),
-        data: struct[5],
-        approved: struct[6],
+        usedTokens: parseFloat(this.dapp.web3.fromWei(struct[5])),
+        data: struct[6],
+        approved: struct[7],
       };
     },
     formatFingerprint (fingerprint) {
