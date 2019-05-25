@@ -2,7 +2,7 @@
     <b-container>
         <b-row class="masthead m-0">
             <b-col lg="8" offset-lg="2">
-                <h1 class="display-4">
+                <h1 class="display-5">
                     <b-img :src="$withBase('/assets/images/logo/shaka_logo_white.png')"
                            rounded="circle"
                            height="64"

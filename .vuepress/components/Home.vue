@@ -2,7 +2,7 @@
     <div>
         <b-row class="masthead main m-0">
             <b-col lg="8" offset-lg="2">
-                <h1 class="display-4">
+                <h1 class="display-5">
                     <b-img :src="$withBase('/assets/images/logo/friendsfingers.svg')"
                            rounded="circle"
                            height="64"

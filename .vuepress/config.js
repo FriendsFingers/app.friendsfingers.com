@@ -3,6 +3,7 @@ module.exports = {
   description: 'FriendsFingers official web site',
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['meta', { name: 'viewport', content: 'width=device-width, initial-scale=1, shrink-to-fit=no' }],
     ['meta', { name: 'google-site-verification', content: 'c0BYczxXdBqyQL7I53N_77M_GcsNQIK9IHvjoAeMbW4' }],
     ['script', { src: '/assets/js/web3.min.js' }],
     ['script', { src: 'https://cdn.jsdelivr.net/npm/cookie-bar/cookiebar-latest.min.js?forceLang=en&theme=momh&tracking=1&thirdparty=1&always=1&noGeoIp=1&scrolling=1&hideDetailsBtn=1&showPolicyLink=1&remember=30&privacyPage=https%3A%2F%2Fwww.friendsfingers.com%2Fprivacy' }], // eslint-disable-line max-len
