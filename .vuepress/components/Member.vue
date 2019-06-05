@@ -95,7 +95,7 @@
             this.dapp.web3.fromWei(
               await this.promisify(this.dapp.instances.token.balanceOf, this.account.member.address),
             ),
-          );
+          ).toFixed(2);
         }
 
         this.loading = false;

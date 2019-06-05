@@ -8,7 +8,7 @@
                            height="64"
                            :alt="$site.title"/>
                     <br>
-                    FriendsFingers' DAO
+                    FriendsFingers DAO
                 </h1>
                 <h4 v-if="!loading" class="text-muted">
                     <b>{{ dao.membersNumber }}</b> DAO Members<br>

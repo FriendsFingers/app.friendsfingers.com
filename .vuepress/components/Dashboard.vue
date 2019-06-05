@@ -165,7 +165,7 @@
             this.dapp.web3.fromWei(
               await this.promisify(this.dapp.instances.token.balanceOf, this.dapp.metamask.address),
             ),
-          );
+          ).toFixed(2);
 
           this.loadingData = false;
         } catch (e) {

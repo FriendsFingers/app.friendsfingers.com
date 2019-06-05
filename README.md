@@ -1,6 +1,22 @@
 ---
-title: FriendsFingers DAPP
 component: Home
+title: FriendsFingers DAO Platform
+description: FriendsFingers DAO Platform. Use Shaka tokens to join DAO.
+meta: 
+    - property: og:image
+      content: /assets/images/social/friendsfingers_social_rect.png
+    - property: og:title
+      content: FriendsFingers DAO Platform
+    - property: og:description
+      content: FriendsFingers DAO Platform. Use Shaka tokens to join DAO.
+    - name: twitter:card
+      content: summary_large_image
+    - property: twitter:title
+      content: FriendsFingers DAO Platform
+    - property: twitter:description
+      content: FriendsFingers DAO Platform. Use Shaka tokens to join DAO.
+    - property: twitter:image
+      content: /assets/images/social/friendsfingers_social_rect.png
 ---
 
 ## FriendsFingers DAPP official web site

@@ -10,8 +10,8 @@
                     <br>
                     {{ $site.title }}
                 </h1>
-                <h4 class="text-muted">{{ $page.title }}</h4>
-                <p class="lead">{{ $site.description }}</p>
+                <h4 class="text-muted">DAO Platform</h4>
+                <p class="lead">Use Shaka tokens to join DAO</p>
             </b-col>
         </b-row>
         <b-row class="masthead purple m-0">
