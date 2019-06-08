@@ -22,7 +22,7 @@
                 <b-nav-item v-if="dapp.metamask.address === ''" :to="$withBase('/dashboard')">Connect</b-nav-item>
                 <b-nav-item-dropdown v-else :text="dapp.metamask.address | truncate(12)" right>
                     <b-dropdown-item :to="$withBase('/dashboard')">Your profile</b-dropdown-item>
-                    <b-dropdown-item @click="disconnect()">Disconnect</b-dropdown-item>
+                    <!--<b-dropdown-item @click="disconnect()">Disconnect</b-dropdown-item>-->
                 </b-nav-item-dropdown>
             </b-navbar-nav>
         </b-collapse>

@@ -9,6 +9,18 @@
                     <b-badge :variant="dapp.network.current.color">{{ dapp.network.current.name }}</b-badge>
                 </li>
                 <li class="list-inline-item">
+                    <font-awesome-icon class="purple" :icon="['fab', 'ethereum']"/>
+                    <b-link :href="tokenLink"
+                            target="_blank">
+                        <small>Shaka Token</small>
+                    </b-link>
+                    <font-awesome-icon class="purple" :icon="['fab', 'ethereum']"/>
+                    <b-link :href="daoLink"
+                            target="_blank">
+                        <small>DAO</small>
+                    </b-link>
+                </li>
+                <li class="list-inline-item">
                     <small>
                         &copy; 2019 🤙
                         <b-link href="https://www.friendsfingers.com" target="_blank">FriendsFingers</b-link>
@@ -26,6 +38,16 @@
       dapp: {
         get () {
           return this.$store.getters.dapp;
+        },
+      },
+      tokenLink: {
+        get () {
+          return this.dapp.instances.token ? `${this.dapp.network.current.etherscanLink}/token/${this.dapp.instances.token.address}` : '#'; // eslint-disable-line max-len
+        },
+      },
+      daoLink: {
+        get () {
+          return this.dapp.instances.dao ? `${this.dapp.network.current.etherscanLink}/address/${this.dapp.instances.dao.address}` : '#'; // eslint-disable-line max-len
         },
       },
     },

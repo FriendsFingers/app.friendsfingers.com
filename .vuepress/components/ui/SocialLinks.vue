@@ -12,14 +12,11 @@
         <b-link href="https://www.facebook.com/friendsfingers" target="_blank">
             <font-awesome-icon :icon="['fab', 'facebook-f']" />
         </b-link>
-        <b-link href="https://www.linkedin.com/company/friendsfingers" target="_blank">
-            <font-awesome-icon :icon="['fab', 'linkedin-in']" />
-        </b-link>
-        <b-link href="https://etherscan.io/token/0x93a7174dafd31d13400cd9fa01f4e5b5baa00d39" target="_blank">
-            <font-awesome-icon :icon="['fab', 'ethereum']" />
-        </b-link>
         <b-link href="https://github.com/friendsfingers" target="_blank">
             <font-awesome-icon :icon="['fab', 'github']" />
+        </b-link>
+        <b-link href="https://www.linkedin.com/company/friendsfingers" target="_blank">
+            <font-awesome-icon :icon="['fab', 'linkedin-in']" />
         </b-link>
     </div>
 </template>

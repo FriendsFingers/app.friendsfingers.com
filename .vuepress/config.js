@@ -18,10 +18,10 @@ module.exports = {
     ],
   ],
   chainWebpack: (config) => {
-    // const isProd = process.env.NODE_ENV && process.env.NODE_ENV === 'production';
+    const isProd = process.env.NODE_ENV && process.env.NODE_ENV === 'production';
 
-    // TODO remove this
-    const isProd = false;
+    // TODO remove comment to use prod
+    // const isProd = true;
 
     config.plugin('injections').tap(pluginArgs => pluginArgs.map(definitions => ({
       ...definitions,

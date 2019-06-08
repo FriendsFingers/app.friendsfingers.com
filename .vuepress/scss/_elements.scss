@@ -68,6 +68,10 @@
     }
   }
 
+  .purple {
+    color: $primary-color;
+  }
+
   .btn-primary {
     background: $primary-color;
     background-image: linear-gradient(to right, $primary-color, $primary-color-dark);
