@@ -16,11 +16,11 @@
             <b-navbar-nav>
                 <b-nav-item :to="$withBase('/dao')">DAO</b-nav-item>
                 <b-nav-item :to="$withBase('/faucet')">Faucet</b-nav-item>
-                <b-nav-item href="https://medium.com/friendsfingers" target="_blank">Blog</b-nav-item>
-                <b-nav-item href="https://www.friendsfingers.com" target="_blank">FriendsFingers</b-nav-item>
             </b-navbar-nav>
 
             <b-navbar-nav class="ml-auto">
+                <b-nav-item href="https://medium.com/friendsfingers" target="_blank">Blog</b-nav-item>
+                <b-nav-item href="https://www.friendsfingers.com" target="_blank">FriendsFingers</b-nav-item>
                 <b-nav-item v-if="dapp.metamask.address === ''" :to="$withBase('/dashboard')">Connect</b-nav-item>
                 <b-nav-item-dropdown v-else :text="dapp.metamask.address | truncate(12)" right>
                     <b-dropdown-item :to="$withBase('/dashboard')">Your profile</b-dropdown-item>
