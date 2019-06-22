@@ -1,9 +1,7 @@
 <template>
     <b-row>
         <b-col lg="12">
-            <b-card v-if="!loading"
-                    header="Your account"
-                    class="mb-3">
+            <b-card v-if="!loading" header="Your account" class="mb-3">
                 <template v-if="dapp.metamask.address">
                     <template v-if="!makingTransaction && !loadingData">
                         <b>Account:</b>
@@ -148,9 +146,7 @@
                     </p>
                 </template>
             </b-card>
-            <b-card title="Faucet status"
-                    id="faucet-box"
-                    class="mb-3 text-white">
+            <b-card title="Faucet status" id="faucet-box" class="mb-3 text-white">
                 <template v-if="loading">
                     <ui--loader :loading="true" color="#ffffff"></ui--loader>
                 </template>

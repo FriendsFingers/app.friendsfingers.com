@@ -15,6 +15,7 @@
         <b-collapse is-nav id="nav_collapse">
             <b-navbar-nav>
                 <b-nav-item :to="$withBase('/dao')">DAO</b-nav-item>
+                <b-nav-item :to="$withBase('/dealer')">Dealer</b-nav-item>
                 <b-nav-item :to="$withBase('/faucet')">Faucet</b-nav-item>
             </b-navbar-nav>
 

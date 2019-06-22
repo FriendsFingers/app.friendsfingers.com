@@ -1,8 +1,9 @@
-/* global __DEFAULT_NETWORK__, __TOKEN_ADDRESS__, __FAUCET_ADDESS__, __DAO_ADDESS__ */
+/* global __DEFAULT_NETWORK__, __TOKEN_ADDRESS__, __FAUCET_ADDESS__, __DAO_ADDESS__, __TOKEN_DEALER__ */
 
 import TokenArtifact from '../abi/BaseToken';
 import FaucetArtifact from '../abi/TokenFaucet';
 import DAOArtifact from '../abi/DAO';
+import DealerArtifact from '../abi/TokenDealer';
 
 export default {
   state: {
@@ -61,11 +62,13 @@ export default {
         token: null,
         faucet: null,
         dao: null,
+        dealer: null,
       },
       instances: {
         token: null,
         faucet: null,
         dao: null,
+        dealer: null,
       },
     },
   },
@@ -169,6 +172,10 @@ export default {
     initDao ({ state, commit }) {
       state.dapp.contracts.dao = state.dapp.web3.eth.contract(DAOArtifact.abi);
       state.dapp.instances.dao = state.dapp.contracts.dao.at(__DAO_ADDESS__);
+    },
+    initDealer ({ state, commit }) {
+      state.dapp.contracts.dealer = state.dapp.web3.eth.contract(DealerArtifact.abi);
+      state.dapp.instances.dealer = state.dapp.contracts.dealer.at(__TOKEN_DEALER__);
     },
     initFaucet ({ state, commit }) {
       state.dapp.contracts.faucet = state.dapp.web3.eth.contract(FaucetArtifact.abi);

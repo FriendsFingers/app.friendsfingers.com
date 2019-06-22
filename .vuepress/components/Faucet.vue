@@ -13,7 +13,7 @@
             </b-col>
         </b-row>
         <b-row class="mt-4">
-            <b-col lg="10" offset-lg="1">
+            <b-col lg="8" offset-lg="2">
                 <ui--token-faucet></ui--token-faucet>
             </b-col>
         </b-row>
