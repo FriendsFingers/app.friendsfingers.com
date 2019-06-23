@@ -24,7 +24,7 @@
                 <b-nav-item href="https://www.friendsfingers.com" target="_blank">FriendsFingers</b-nav-item>
                 <b-nav-item v-if="dapp.metamask.address === ''" :to="$withBase('/dashboard')">Connect</b-nav-item>
                 <b-nav-item-dropdown v-else :text="dapp.metamask.address | truncate(12)" right>
-                    <b-dropdown-item :to="$withBase('/dashboard')">Your profile</b-dropdown-item>
+                    <b-dropdown-item :to="$withBase('/dashboard')">Dashboard</b-dropdown-item>
                     <!--<b-dropdown-item @click="disconnect()">Disconnect</b-dropdown-item>-->
                 </b-nav-item-dropdown>
             </b-navbar-nav>
@@ -52,7 +52,7 @@
         if (!this.dapp.metamask.installed) {
           this.makeToast(
             'No Ethereum Provider',
-            `Please install MetaMask ${(this.isMobile()) ? 'or a mobile browser like Trust Wallet or Coinbase Wallet' : ''} to use DApp.`, // eslint-disable-line max-len
+            `Please install MetaMask ${(this.isMobile()) ? 'or a mobile Web3 browser' : ''} to use DApp.`, // eslint-disable-line max-len
             'warning',
           );
         } else if (this.dapp.metamask.netId !== this.dapp.network.current.id) {

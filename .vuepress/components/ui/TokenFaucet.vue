@@ -125,10 +125,7 @@
                         <template v-if="!dapp.metamask.installed">
                             Install
                             <b-link href="https://metamask.io/" target="_blank">MetaMask</b-link>
-                            or a mobile browser like
-                            <b-link href="https://trustwallet.com/" target="_blank">Trust Wallet</b-link>
-                            or
-                            <b-link href="https://wallet.coinbase.com/" target="_blank">Coinbase Wallet</b-link>
+                            <template v-if="isMobile()">or a mobile Web3 browser</template>
                             to get your Tokens.
                         </template>
                         <template v-else-if="dapp.metamask.netId !== dapp.network.current.id">

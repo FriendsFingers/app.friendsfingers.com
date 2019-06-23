@@ -23,6 +23,8 @@
     "__TOKEN_ADDRESS__": false,
     "__FAUCET_ADDESS__": false,
     "__DAO_ADDESS__": false,
+    "__TOKEN_DEALER__": false,
+    "__CONTRIBUTIONS__": false,
     "ethereum": false,
     "web3": false,
     "Web3": false

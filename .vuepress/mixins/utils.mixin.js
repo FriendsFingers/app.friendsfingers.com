@@ -1,3 +1,5 @@
+import QRCode from 'qrcode';
+
 export default {
   data () {
     return {
@@ -43,6 +45,17 @@ export default {
       } catch (e) {
         return false;
       }
+    },
+    generateQRCode (value) {
+      return QRCode.toDataURL(
+        value,
+        {
+          color: {
+            dark: '#b733a7', // Blue dots
+            light: '#0000', // Transparent background
+          },
+        }
+      );
     },
     makeToast (title, text, variant = null) {
       this.$bvToast.toast(text, {

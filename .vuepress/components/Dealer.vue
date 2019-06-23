@@ -21,8 +21,12 @@
                 </b-alert>
             </b-col>
             <b-col lg="8" offset-lg="2">
-                <b-card header="Get Shaka Tokens" class="mt-4">
-                    <p>Insert the amount of ETH you want to send and we will calculate your rate.</p>
+                <b-card header="Get Shaka Tokens using your Web3 Wallet" class="mt-4">
+                    <p>
+                        Default rate is <strong>{{ dealer.rate }} {{ token.symbol }}/ETH</strong><br>
+                        If you have joined our DAO you will have a <strong>+100% bonus</strong>.<br>
+                        If you have staked tokens you will have a <strong>+300% bonus</strong>.
+                    </p>
 
                     <b-form @submit.prevent="buyTokens">
                         <b-input-group>
@@ -33,6 +37,7 @@
                                     v-model.trim="ethAmount"
                                     v-validate="{ required: true, decimal: 18, min_value: 0.01 }"
                                     data-vv-as="ETH amount"
+                                    @keyup="getExpectedTokenAmount"
                                     :class="{'is-invalid': errors.has('ethAmount')}">
                             </b-form-input>
                             <b-input-group-append>
@@ -41,10 +46,35 @@
                                 </b-button>
                             </b-input-group-append>
                         </b-input-group>
+                        <b-form-valid-feedback v-if="dealer.expectedTokenAmount > 0" :state="true">
+                            You'll receive {{ dealer.expectedTokenAmount }} {{ token.symbol }}
+                        </b-form-valid-feedback>
+                        <b-form-text v-else>
+                            Insert the amount of ETH you want to send and we will calculate your rate.
+                        </b-form-text>
                         <small v-show="errors.has('ethAmount')" class="text-danger">
                             {{ errors.first('ethAmount') }}
                         </small>
                     </b-form>
+                </b-card>
+
+                <b-card header="Or use your preferred wallet" no-body class="mt-4">
+                    <b-media>
+                        <b-img slot="aside" fluid-grow :src="dealer.qrcode" :alt="dealer.address" />
+                        <h4 class="card-title my-3">Send ETH to the following address</h4>
+                        <h6 class="card-subtitle text-muted address">{{ dealer.address }}</h6>
+                        <b-link class="text-muted"
+                                :href="dapp.network.current.etherscanLink + '/address/' + dealer.address"
+                                target="_blank">
+                            <small>View on Etherscan</small>
+                        </b-link>
+                    </b-media>
+
+                    <b-alert show variant="warning" class="mb-0">
+                        NOTE: Do not send ETH from exchange like Coinbase, Bittrex, Bitfinex or similar.
+                        They don’t give you full access to your wallet so sending ETH from one of these
+                        means for you losing your tokens and we won’t be able to help you to recover them.
+                    </b-alert>
                 </b-card>
             </b-col>
         </b-row>
@@ -79,9 +109,10 @@
           logo: '',
         },
         dealer: {
-          membersNumber: 0,
-          totalStakedTokens: 0,
-          totalUsedTokens: 0,
+          address: '',
+          qrcode: '',
+          rate: 0,
+          expectedTokenAmount: 0,
         },
       };
     },
@@ -100,6 +131,7 @@
         try {
           this.$store.dispatch('initToken');
           this.$store.dispatch('initDealer');
+          this.$store.dispatch('initContributions');
 
           this.ready();
         } catch (e) {
@@ -109,6 +141,7 @@
       },
       async ready () {
         await this.getTokenData();
+        await this.getDealerData();
 
         this.loading = false;
       },
@@ -123,6 +156,28 @@
           console.log(e); // eslint-disable-line no-console
           alert('Some error occurred.');
         }
+      },
+      async getDealerData () {
+        try {
+          this.dealer.address = this.dapp.instances.dealer.address;
+          this.dealer.qrcode = await this.generateQRCode(this.dealer.address);
+          this.dealer.rate = parseFloat(await this.promisify(this.dapp.instances.dealer.rate));
+        } catch (e) {
+          this.loading = false;
+          console.log(e); // eslint-disable-line no-console
+          alert('Some error occurred.');
+        }
+      },
+      async getExpectedTokenAmount () {
+        this.dealer.expectedTokenAmount = parseFloat(
+          this.dapp.web3.fromWei(
+            await this.promisify(
+              this.dapp.instances.dealer.expectedTokenAmount,
+              this.dapp.metamask.address,
+              this.dapp.web3.toWei(this.ethAmount)
+            )
+          )
+        );
       },
       buyTokens () {
         this.$validator.validate('ethAmount').then((result) => {
