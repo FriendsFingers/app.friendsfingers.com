@@ -13,21 +13,35 @@
                 <h4 class="text-muted">{{ $page.frontmatter.description }}</h4>
             </b-col>
         </b-row>
-        <b-row v-if="!loading">
-            <b-col v-if="trx.hash" lg="12" class="mb-2">
-                <b-alert show variant="success" class="mt-3">
-                    Last transaction:
-                    <b-link :href="trx.link" target="_blank">{{ trx.hash }}</b-link>
-                </b-alert>
-            </b-col>
+        <b-row>
             <b-col lg="8" offset-lg="2">
-                <b-card header="Get Shaka Tokens using your Web3 Wallet" class="mt-4">
-                    <p>
-                        Default rate is <strong>{{ dealer.rate }} {{ token.symbol }}/ETH</strong><br>
-                        If you have joined our DAO you will have a <strong>+100% bonus</strong>.<br>
-                        If you have staked tokens you will have a <strong>+300% bonus</strong>.
-                    </p>
+                <b-card title="Dealer status" class="mt-4 bg-purple">
+                    <template v-if="loading">
+                        <ui--loader :loading="true" color="#ffffff"></ui--loader>
+                    </template>
+                    <template v-else>
+                        <p class="card-text">
+                            We've already distributed <b>{{ contributions.totalSoldTokens }} {{ token.symbol }}</b>.
+                            Remaining tokens <b>{{ dealer.remainingTokens }} {{ token.symbol }}</b>.<br>
 
+                            <b-progress :value="dealer.percentage"
+                                        variant="warning"
+                                        striped
+                                        :animated="true"
+                                        class="mt-2"/>
+
+                            <br>
+                            <span>
+                                Default rate is <strong>{{ dealer.rate }} {{ token.symbol }}/ETH</strong><br>
+                                If you have joined our DAO you will have a <strong>+100% bonus</strong>.<br>
+                                If you have staked tokens you will have a <strong>+300% bonus</strong>.
+                            </span>
+                        </p>
+                    </template>
+                </b-card>
+            </b-col>
+            <b-col v-if="!loading" lg="8" offset-lg="2">
+                <b-card header="Get Shaka Tokens using your Web3 Wallet" class="mt-4">
                     <b-form @submit.prevent="buyTokens">
                         <b-input-group>
                             <b-form-input
@@ -47,7 +61,10 @@
                             </b-input-group-append>
                         </b-input-group>
                         <b-form-valid-feedback v-if="dealer.expectedTokenAmount > 0" :state="true">
-                            You'll receive {{ dealer.expectedTokenAmount }} {{ token.symbol }}
+                            You'll receive {{ dealer.expectedTokenAmount }} {{ token.symbol }}<br>
+                            <span v-if="dapp.metamask.address" class="text-info">
+                                Note: this rate is relative to address <b>{{ dapp.metamask.address }}</b>
+                            </span>
                         </b-form-valid-feedback>
                         <b-form-text v-else>
                             Insert the amount of ETH you want to send and we will calculate your rate.
@@ -56,6 +73,11 @@
                             {{ errors.first('ethAmount') }}
                         </small>
                     </b-form>
+
+                    <b-alert show v-if="trx.hash" variant="success" class="mt-3">
+                        Last transaction:
+                        <b-link :href="trx.link" target="_blank">{{ trx.hash }}</b-link>
+                    </b-alert>
                 </b-card>
 
                 <b-card header="Or use your preferred wallet" no-body class="mt-4">
@@ -78,9 +100,6 @@
                 </b-card>
             </b-col>
         </b-row>
-        <template v-else>
-            <ui--loader :loading="true"></ui--loader>
-        </template>
     </b-container>
 </template>
 
@@ -113,6 +132,10 @@
           qrcode: '',
           rate: 0,
           expectedTokenAmount: 0,
+          remainingTokens: 0,
+        },
+        contributions: {
+          totalSoldTokens: 0,
         },
       };
     },
@@ -162,6 +185,18 @@
           this.dealer.address = this.dapp.instances.dealer.address;
           this.dealer.qrcode = await this.generateQRCode(this.dealer.address);
           this.dealer.rate = parseFloat(await this.promisify(this.dapp.instances.dealer.rate));
+
+          this.dealer.remainingTokens = parseFloat(
+            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.token.balanceOf, this.dealer.address)),
+          );
+
+          this.contributions.totalSoldTokens = parseFloat(
+            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.contributions.totalSoldTokens)),
+          );
+
+          this.dealer.max = this.contributions.totalSoldTokens + this.dealer.remainingTokens;
+
+          this.dealer.percentage = 100 * this.contributions.totalSoldTokens / this.dealer.max;
         } catch (e) {
           this.loading = false;
           console.log(e); // eslint-disable-line no-console

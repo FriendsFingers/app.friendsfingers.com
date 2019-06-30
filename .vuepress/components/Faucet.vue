@@ -1,6 +1,6 @@
 <template>
     <b-container>
-        <b-row class="masthead m-0">
+        <b-row class="masthead m-4">
             <b-col lg="8" offset-lg="2">
                 <h1 class="display-5">
                     <b-img :src="$withBase('/assets/images/logo/shaka_logo_white.png')"
@@ -12,7 +12,7 @@
                 <h4 class="text-muted">{{ $page.frontmatter.description }}</h4>
             </b-col>
         </b-row>
-        <b-row class="mt-4">
+        <b-row>
             <b-col lg="8" offset-lg="2">
                 <ui--token-faucet></ui--token-faucet>
             </b-col>

@@ -1,7 +1,30 @@
 <template>
     <b-row>
         <b-col lg="12">
-            <b-card v-if="!loading" header="Your account" class="mb-3">
+            <b-card title="Faucet status" id="faucet-box" class="mt-4 bg-purple">
+                <template v-if="loading">
+                    <ui--loader :loading="true" color="#ffffff"></ui--loader>
+                </template>
+                <template v-else>
+                    <p class="card-text">
+                        We've already distributed <b>{{ faucet.distributedTokens }} {{ token.symbol }}</b>.
+                        Remaining tokens <b>{{ faucet.remainingTokens }} {{ token.symbol }}</b>.<br>
+
+                        <b-progress :value="faucet.percentage"
+                                    variant="warning"
+                                    striped
+                                    :animated="true"
+                                    class="mt-2"/>
+
+                        <small>
+                            You can earn <b>{{ faucet.dailyRate }} {{ token.symbol }}</b> per day and
+                            <b>{{ faucet.referralTokens }} {{ token.symbol }}</b>
+                            for each time your friends will use the faucet.
+                        </small>
+                    </p>
+                </template>
+            </b-card>
+            <b-card v-if="!loading" header="Your account" class="mt-4">
                 <template v-if="dapp.metamask.address">
                     <template v-if="!makingTransaction && !loadingData">
                         <b>Account:</b>
@@ -140,29 +163,6 @@
                                @click="enable">
                             Connect
                         </b-btn>
-                    </p>
-                </template>
-            </b-card>
-            <b-card title="Faucet status" id="faucet-box" class="mb-3 text-white">
-                <template v-if="loading">
-                    <ui--loader :loading="true" color="#ffffff"></ui--loader>
-                </template>
-                <template v-else>
-                    <p class="card-text">
-                        We've already distributed <b>{{ faucet.distributedTokens }} {{ token.symbol }}</b>.
-                        Remaining tokens <b>{{ faucet.remainingTokens }} {{ token.symbol }}</b>.<br>
-
-                        <b-progress :value="faucet.percentage"
-                                    variant="warning"
-                                    striped
-                                    :animated="true"
-                                    class="mt-2"/>
-
-                        <small>
-                            You can earn <b>{{ faucet.dailyRate }} {{ token.symbol }}</b> per day and
-                            <b>{{ faucet.referralTokens }} {{ token.symbol }}</b>
-                            for each time your friends will use the faucet.
-                        </small>
                     </p>
                 </template>
             </b-card>
