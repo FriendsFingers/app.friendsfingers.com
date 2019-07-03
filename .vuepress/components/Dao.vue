@@ -13,7 +13,9 @@
                 <h4 v-if="!loading" class="text-muted">
                     <b>{{ dao.membersNumber }}</b> DAO Members<br>
                     <b>{{ dao.totalStakedTokens }} {{ token.symbol }}</b> Staked<br>
-                    <b>{{ dao.totalUsedTokens }} {{ token.symbol }}</b> Used
+                    <template v-if="dao.totalUsedTokens > 0">
+                        <b>{{ dao.totalUsedTokens }} {{ token.symbol }}</b> Used
+                    </template>
                 </h4>
             </b-col>
         </b-row>
@@ -23,7 +25,7 @@
                     <b-col md="3" sm="4" v-for="item in memberList" :key="item.id" class="p-2">
                         <b-card no-body>
                             <b-card-body>
-                                <b-link :to="{ path: '/member/', query: { id: item.id } }">
+                                <b-link :to="{ path: '/member/', query: { ref: item.id } }">
                                     <ui--member-image :member="item"></ui--member-image>
                                 </b-link>
                             </b-card-body>

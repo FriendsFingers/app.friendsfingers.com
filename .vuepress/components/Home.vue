@@ -28,7 +28,7 @@
                     Shaka Token
                 </h1>
                 <p class="lead mt-5">
-                    Shaka Tokens will make you part of FriendsFingers' Decentralized Autonomous Organization (DAO).
+                    Shaka Tokens will make you part of FriendsFingers' Decentralized Autonomous Organization.
                 </p>
                 <p class="lead mt-5">
                     <b-btn variant="action" size="lg" class="m-1" :to="$withBase('/dealer')">Get Shaka</b-btn>

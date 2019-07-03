@@ -30,6 +30,7 @@
     ],
     data () {
       return {
+        ref: '',
         loading: true,
         token: {
           name: '',
@@ -54,7 +55,7 @@
       },
     },
     mounted () {
-      this.account.memberId = this.getParam('id');
+      this.ref = this.getParam('ref');
 
       this.initDapp();
     },
@@ -87,7 +88,14 @@
         }
       },
       async getMember () {
-        const struct = await this.promisify(this.dapp.instances.dao.getMemberById, this.account.memberId);
+        let struct;
+
+        if (this.dapp.web3.isAddress(this.ref)) {
+          struct = await this.promisify(this.dapp.instances.dao.getMemberByAddress, this.ref);
+        } else {
+          struct = await this.promisify(this.dapp.instances.dao.getMemberById, this.ref);
+        }
+
         this.account.member = this.formatStructure(struct);
 
         if (this.account.member) {
@@ -96,6 +104,8 @@
               await this.promisify(this.dapp.instances.token.balanceOf, this.account.member.address),
             ),
           ).toFixed(2);
+
+          this.account.memberId = this.account.member.id;
         }
 
         this.loading = false;
