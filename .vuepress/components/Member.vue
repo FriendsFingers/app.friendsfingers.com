@@ -68,7 +68,7 @@
           this.ready();
         } catch (e) {
           alert(e);
-          document.location.href = this.$withBase('/');
+          this.$router.push({ path: '/' });
         }
       },
       async ready () {
