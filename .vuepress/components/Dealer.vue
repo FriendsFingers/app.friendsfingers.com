@@ -6,7 +6,7 @@
                     <b-img :src="$withBase('/assets/images/logo/shaka_logo_white.png')"
                            rounded="circle"
                            height="64"
-                           :alt="$site.title" />
+                           :alt="$site.title"/>
                     <br>
                     Shaka Tokens Dealer
                 </h1>
@@ -40,7 +40,7 @@
                     </template>
                 </b-card>
             </b-col>
-            <b-col v-if="!loading" lg="8" offset-lg="2">
+            <b-col v-if="terms.length === 3" lg="8" offset-lg="2">
                 <b-card header="Get Shaka Tokens using your Web3 Wallet" class="mt-4">
                     <b-form @submit.prevent="buyTokens">
                         <b-input-group>
@@ -66,7 +66,8 @@
                                 Note: this rate is relative to address <b>{{ dapp.metamask.address }}</b>
                             </span>
                             <span v-else class="text-info">
-                                Note: <b-link :to="$withBase('/dashboard')">connect</b-link> to have rate calculated basing on your address
+                                Note: <b-link :to="$withBase('/dashboard')">connect</b-link> to have
+                                rate calculated basing on your address
                             </span>
                         </b-form-valid-feedback>
                         <b-form-text v-else>
@@ -85,7 +86,7 @@
 
                 <b-card header="Or use your preferred wallet" no-body class="mt-4">
                     <b-media>
-                        <b-img slot="aside" fluid-grow :src="dealer.qrcode" :alt="dealer.address" />
+                        <b-img slot="aside" fluid-grow :src="dealer.qrcode" :alt="dealer.address"/>
                         <h4 class="card-title my-3">Send ETH to the following address</h4>
                         <h6 class="card-subtitle text-muted address">{{ dealer.address }}</h6>
                         <b-link class="text-muted"
@@ -100,6 +101,43 @@
                         They don’t give you full access to your wallet so sending ETH from one of these
                         means for you losing your tokens and we won’t be able to help you to recover them.
                     </b-alert>
+                </b-card>
+            </b-col>
+            <b-col lg="8" offset-lg="2">
+                <b-card border-variant="info"
+                        header-bg-variant="info"
+                        header-text-variant="white"
+                        header="Accept Terms and Conditions"
+                        class="mt-4">
+                    <b-form-group>
+                        <b-form-checkbox-group v-model="terms">
+                            <b-form-checkbox value="citizens" :disabled="terms.includes('citizens')">
+                                Confirm that you are NOT a U.S. or Chinese citizen, resident or entity
+                                (each a "U.S. or Chinese Person") nor are you purchasing Tokens or signing
+                                on behalf of a U.S. or Chinese Person
+                            </b-form-checkbox>
+                            <b-form-checkbox value="country" :disabled="terms.includes('country')">
+                                Confirm that you are legitimate to purchase Tokens and you are compliant
+                                with active regulation in your country of residence
+                            </b-form-checkbox>
+                            <b-form-checkbox value="global" :disabled="terms.includes('global')">
+                                Confirm that you have read, understood and agreed the FriendsFingers'
+                                Terms and Conditions expressed in our
+                                <b-link href="https://www.friendsfingers.com/whitepaper" target="_blank">
+                                    Whitepaper
+                                </b-link>
+                                and Official links below. Confirm also that you have read, understood and agreed
+                                the FriendsFingers'
+                                <b-link href="https://www.friendsfingers.com/terms" target="_blank">
+                                    Terms of Use
+                                </b-link>
+                                and
+                                <b-link href="https://www.friendsfingers.com/privacy" target="_blank">
+                                    Privacy Policy
+                                </b-link>
+                            </b-form-checkbox>
+                        </b-form-checkbox-group>
+                    </b-form-group>
                 </b-card>
             </b-col>
         </b-row>
@@ -118,6 +156,7 @@
       return {
         loading: true,
         makingTransaction: false,
+        terms: [],
         ethAmount: '',
         trx: {
           hash: '',
@@ -212,9 +251,9 @@
             await this.promisify(
               this.dapp.instances.dealer.expectedTokenAmount,
               this.dapp.metamask.address,
-              this.dapp.web3.toWei(this.ethAmount)
-            )
-          )
+              this.dapp.web3.toWei(this.ethAmount),
+            ),
+          ),
         );
       },
       buyTokens () {
