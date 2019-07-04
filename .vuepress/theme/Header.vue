@@ -18,7 +18,7 @@
                 <b-nav-item :to="$withBase('/dealer')">Dealer</b-nav-item>
                 <b-nav-item :to="$withBase('/faucet')">Faucet</b-nav-item>
 
-                <b-nav-item disabled>|</b-nav-item>
+                <b-nav-item disabled class="d-none d-md-block">|</b-nav-item>
 
                 <b-nav-item href="https://medium.com/friendsfingers" target="_blank">Blog</b-nav-item>
                 <b-nav-item href="https://www.friendsfingers.com" target="_blank">FriendsFingers</b-nav-item>
