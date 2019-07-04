@@ -65,6 +65,9 @@
                             <span v-if="dapp.metamask.address" class="text-info">
                                 Note: this rate is relative to address <b>{{ dapp.metamask.address }}</b>
                             </span>
+                            <span v-else class="text-info">
+                                Note: <b-link :to="$withBase('/dashboard')">connect</b-link> to have rate calculated basing on your address
+                            </span>
                         </b-form-valid-feedback>
                         <b-form-text v-else>
                             Insert the amount of ETH you want to send and we will calculate your rate.
