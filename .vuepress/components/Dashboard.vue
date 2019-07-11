@@ -117,7 +117,7 @@
     methods: {
       initDapp () {
         try {
-          this.$store.dispatch('initToken');
+          this.$store.dispatch('initShakaToken');
           this.$store.dispatch('initDao');
 
           this.ready();

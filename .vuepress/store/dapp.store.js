@@ -2,6 +2,7 @@
 global __DEFAULT_NETWORK__, __TOKEN_ADDRESS__, __FAUCET_ADDESS__, __DAO_ADDESS__, __TOKEN_DEALER__, __CONTRIBUTIONS__
 */
 
+import ERC20 from '../abi/ERC20';
 import TokenArtifact from '../abi/BaseToken';
 import FaucetArtifact from '../abi/TokenFaucet';
 import DAOArtifact from '../abi/DAO';
@@ -170,7 +171,7 @@ export default {
         }
       });
     },
-    initToken ({ state, commit }) {
+    initShakaToken ({ state, commit }) {
       state.dapp.contracts.token = state.dapp.web3.eth.contract(TokenArtifact.abi);
       state.dapp.instances.token = state.dapp.contracts.token.at(__TOKEN_ADDRESS__);
     },
@@ -189,6 +190,9 @@ export default {
     initFaucet ({ state, commit }) {
       state.dapp.contracts.faucet = state.dapp.web3.eth.contract(FaucetArtifact.abi);
       state.dapp.instances.faucet = state.dapp.contracts.faucet.at(__FAUCET_ADDESS__);
+    },
+    loadERC20 ({ state, commit }) {
+      state.dapp.contracts.erc20 = state.dapp.web3.eth.contract(ERC20.abi);
     },
     async connect ({ state, commit }) {
       try {

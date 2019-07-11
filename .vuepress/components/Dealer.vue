@@ -194,7 +194,7 @@
     methods: {
       initDealer () {
         try {
-          this.$store.dispatch('initToken');
+          this.$store.dispatch('initShakaToken');
           this.$store.dispatch('initDealer');
           this.$store.dispatch('initContributions');
 

@@ -1,12 +1,15 @@
 <template>
     <b-row>
         <b-col lg="12">
-            <b-card title="Faucet status" id="faucet-box" class="mt-4 bg-purple">
+            <b-card :title="`${token.name} Faucet status`" id="faucet-box" class="mt-4 bg-purple">
                 <template v-if="loading">
                     <ui--loader :loading="true" color="#ffffff"></ui--loader>
                 </template>
                 <template v-else>
                     <p class="card-text">
+                        Daily rate: {{ faucet.dailyRate }} {{ token.symbol }}.<br>
+                        Referral rate: {{ faucet.referralRate }} {{ token.symbol }}.<br>
+
                         We've already distributed <b>{{ faucet.distributedTokens }} {{ token.symbol }}</b>.
                         Remaining tokens <b>{{ faucet.remainingTokens }} {{ token.symbol }}</b>.<br>
 
@@ -14,13 +17,19 @@
                                     variant="warning"
                                     striped
                                     :animated="true"
-                                    class="mt-2"/>
+                                    class="my-2"/>
 
-                        <small>
-                            You can earn <b>{{ faucet.dailyRate }} {{ token.symbol }}</b> per day and
-                            <b>{{ faucet.referralTokens }} {{ token.symbol }}</b>
-                            for each time your friends will use the faucet.
-                        </small>
+                        <b-alert show>
+                            <small>
+                                You can earn up to <b>{{ faucet.dailyRate * 4 }} {{ token.symbol }}</b> per day and
+                                up to <b>{{ faucet.referralRate * 4 }} {{ token.symbol }}</b>
+                                for each time your friends will use the faucet.
+                                <b-link href="#"
+                                        target="_blank" v-b-tooltip.hover title="How to earn more?">
+                                    <font-awesome-icon icon="info-circle"/>
+                                </b-link>
+                            </small>
+                        </b-alert>
                     </p>
                 </template>
             </b-card>
@@ -107,7 +116,7 @@
                             </b-alert>
                         </b-form>
                         <hr class="my-4">
-                        <h4>Earn more Shaka Tokens with your referral link</h4>
+                        <h4>Earn more Tokens with your referral link</h4>
                         <b-form-group id="my-link-group"
                                       label="Your referral link is:"
                                       label-for="my-link">
@@ -134,7 +143,7 @@
                             </b-btn>
                         </p>
                         <p class="lead">
-                            Share with your friends and earn Shaka Tokens
+                            Share with your friends and earn Tokens
                         </p>
                     </template>
                     <template v-else>
@@ -173,6 +182,7 @@
 <script>
   import utils from '../../mixins/utils.mixin';
 
+  import faucets from '../../content/faucets';
   import friends from '../../content/friends';
 
   export default {
@@ -203,19 +213,12 @@
           logo: '',
         },
         faucet: {
-          dailyRate: 0,
-          referralTokens: 0,
-          distributedTokens: 0,
-          remainingTokens: 0,
+          tokens: faucets[process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? 'prod' : 'dev'],
         },
         account: {
           address: '',
-          receivedTokens: 0,
-          earnedByReferral: 0,
           referral: '',
           referredAddresses: [],
-          lastUpdate: 0,
-          nextClaimTime: 0,
           share: {
             link: '',
           },
@@ -243,7 +246,7 @@
     methods: {
       initDapp () {
         try {
-          this.$store.dispatch('initToken');
+          this.$store.dispatch('loadERC20');
           this.$store.dispatch('initFaucet');
 
           this.ready();
@@ -253,7 +256,7 @@
         }
       },
       async ready () {
-        await this.getTokenData();
+        await this.loadERC20Data(0);
         await this.getFaucetData();
         await this.getAccountData();
 
@@ -272,12 +275,14 @@
       async enable () {
         this.$store.dispatch('connect');
       },
-      async getTokenData () {
+      async loadERC20Data (selected) {
         try {
-          this.token.name = await this.promisify(this.dapp.instances.token.name);
-          this.token.symbol = await this.promisify(this.dapp.instances.token.symbol);
-          this.token.link = this.dapp.network.current.etherscanLink + '/token/' + this.dapp.instances.token.address;
-          this.token.logo = this.$withBase('/assets/images/logo/shaka_logo_white.png');
+          this.token.name = this.faucet.tokens[selected].name;
+          this.token.symbol = this.faucet.tokens[selected].symbol;
+          this.token.decimals = this.faucet.tokens[selected].decimals;
+          this.token.address = this.faucet.tokens[selected].address;
+          this.token.link = this.dapp.network.current.etherscanLink + '/token/' + this.token.address;
+          this.token.logo = this.$withBase(`/assets/images/faucet/logos/${this.faucet.tokens[selected].logo}`);
         } catch (e) {
           console.log(e); // eslint-disable-line no-console
           this.loading = false;
@@ -286,17 +291,24 @@
       },
       async getFaucetData () {
         try {
+          this.faucet.isEnabled = await this.promisify(this.dapp.instances.faucet.isEnabled, this.token.address);
           this.faucet.dailyRate = parseFloat(
-            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.faucet.dailyRate)),
+            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.faucet.getDailyRate, this.token.address)),
           );
-          this.faucet.referralTokens = parseFloat(
-            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.faucet.referralTokens)),
+          this.faucet.referralRate = parseFloat(
+            this.dapp.web3.fromWei(
+              await this.promisify(this.dapp.instances.faucet.getReferralRate, this.token.address)
+            ),
           );
           this.faucet.remainingTokens = parseFloat(
-            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.faucet.remainingTokens)),
+            this.dapp.web3.fromWei(
+              await this.promisify(this.dapp.instances.faucet.remainingTokens, this.token.address)
+            ),
           );
           this.faucet.distributedTokens = parseFloat(
-            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.faucet.totalDistributedTokens)),
+            this.dapp.web3.fromWei(
+              await this.promisify(this.dapp.instances.faucet.totalDistributedTokens, this.token.address)
+            ),
           );
 
           this.faucet.max = this.faucet.distributedTokens + this.faucet.remainingTokens;
@@ -319,29 +331,32 @@
             );
             this.account.receivedTokens = parseFloat(
               this.dapp.web3.fromWei(await this.promisify(
-                this.dapp.instances.faucet.receivedTokens, this.account.address)
+                this.dapp.instances.faucet.receivedTokens, this.account.address, this.token.address
+              )
               ),
             );
             this.account.earnedByReferral = parseFloat(
               this.dapp.web3.fromWei(
-                await this.promisify(this.dapp.instances.faucet.earnedByReferral, this.account.address),
+                await this.promisify(
+                  this.dapp.instances.faucet.earnedByReferral, this.account.address, this.token.address
+                ),
               ),
             );
             this.account.lastUpdate = (
-              await this.promisify(this.dapp.instances.faucet.lastUpdate, this.account.address)
+              await this.promisify(this.dapp.instances.faucet.lastUpdate, this.account.address, this.token.address)
             ).valueOf() * 1000;
             this.account.nextClaimTime = (
-              await this.promisify(this.dapp.instances.faucet.nextClaimTime, this.account.address)
+              await this.promisify(this.dapp.instances.faucet.nextClaimTime, this.account.address, this.token.address)
             ).valueOf() * 1000;
 
             this.account.share.link = window.location.origin + this.$withBase(
               `/faucet?referral=${this.account.address}`,
             );
 
-            this.account.share.facebook = `https://www.facebook.com/sharer.php?u=${this.account.share.link}&quote=Earn FREE Shaka, the token that will make you part of the FriendsFingers DAO`; // eslint-disable-line max-len
-            this.account.share.twitter = `https://twitter.com/intent/tweet?url=${this.account.share.link}&hashtags=ethereum,blockchain,erc20,airdrop&text=Earn FREE Shaka, the token that will make you part of the @friendsfingers DAO`; // eslint-disable-line max-len
-            this.account.share.telegram = `https://t.me/share/url?url=${this.account.share.link}&text=Earn FREE Shaka, the token that will make you part of the @friendsfingers DAO`; // eslint-disable-line max-len
-            this.account.share.whatsapp = `whatsapp://send?text=Earn FREE Shaka, the token that will make you part of the FriendsFingers DAO ${this.account.share.link}`; // eslint-disable-line max-len
+            this.account.share.facebook = `https://www.facebook.com/sharer.php?u=${this.account.share.link}&quote=Earn FREE Tokens using FriendsFingers Faucets. Join DAO and earn more.`; // eslint-disable-line max-len
+            this.account.share.twitter = `https://twitter.com/intent/tweet?url=${this.account.share.link}&hashtags=ethereum,blockchain,erc20,airdrop&text=Earn FREE Tokens using @FriendsFingers Faucets. Join DAO and earn more.`; // eslint-disable-line max-len
+            this.account.share.telegram = `https://t.me/share/url?url=${this.account.share.link}&text=Earn FREE Tokens using @FriendsFingers Faucets. Join DAO and earn more.`; // eslint-disable-line max-len
+            this.account.share.whatsapp = `whatsapp://send?text=Earn FREE Tokens using FriendsFingers Faucets. Join DAO and earn more. ${this.account.share.link}`; // eslint-disable-line max-len
           }
           this.loadingData = false;
         } catch (e) {
@@ -356,6 +371,7 @@
             this.makingTransaction = true;
 
             this.dapp.instances.faucet.getTokensWithReferral(
+              this.token.address,
               this.referral.address,
               {
                 from: this.account.address,
