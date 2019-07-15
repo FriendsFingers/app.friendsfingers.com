@@ -1,7 +1,3 @@
-/*
-global __DEFAULT_NETWORK__, __TOKEN_ADDRESS__, __FAUCET_ADDESS__, __DAO_ADDESS__, __TOKEN_DEALER__, __CONTRIBUTIONS__
-*/
-
 import ERC20 from '../abi/ERC20';
 import TokenArtifact from '../abi/BaseToken';
 import FaucetArtifact from '../abi/TokenFaucet';
@@ -111,7 +107,7 @@ export default {
       // commit('setAddress', localStorage.getItem('address') || null);
     },
     initWeb3 ({ state, commit }, checkWeb3) {
-      if (!state.dapp.network.list.hasOwnProperty(state.currentNetwork)) {
+      if (!Object.prototype.hasOwnProperty.call(state.dapp.network.list, state.currentNetwork)) {
         throw new Error(
           `Failed initializing network ${state.currentNetwork}. Allowed values are mainnet, ropsten and rinkeby.`,
         );
@@ -152,7 +148,6 @@ export default {
               state.web3Provider.on('networkChanged', function (network) {
                 document.location.reload();
               });
-
             } else {
               state.dapp.metamask.address = state.dapp.web3.eth.accounts[0] || '';
             }

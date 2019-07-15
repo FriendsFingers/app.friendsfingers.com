@@ -1,6 +1,16 @@
 <template>
     <b-row>
         <b-col lg="12">
+            <b-card header="Select your preferred token" class="mt-4">
+                <b-form-select v-model="faucet.selectedToken" @change="initData">
+                    <option v-for="faucetToken in faucet.tokens" :value="faucetToken">
+                        {{ `${faucetToken.address} - ${faucetToken.name} (${faucetToken.symbol})` }}
+                    </option>
+                </b-form-select>
+                <b-form-text id="input-live-help">
+                    View on  <b-link :href="token.link" target="_blank">Etherscan</b-link>.
+                </b-form-text>
+            </b-card>
             <b-card :title="`${token.name} Faucet status`" id="faucet-box" class="mt-4 bg-purple">
                 <template v-if="loading">
                     <ui--loader :loading="true" color="#ffffff"></ui--loader>
@@ -213,6 +223,7 @@
           logo: '',
         },
         faucet: {
+          selectedToken: null,
           tokens: faucets[process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? 'prod' : 'dev'],
         },
         account: {
@@ -256,9 +267,9 @@
         }
       },
       async ready () {
-        await this.loadERC20Data(0);
-        await this.getFaucetData();
-        await this.getAccountData();
+        this.faucet.selectedToken = this.faucet.tokens[0];
+
+        await this.initData();
 
         this.$validator.extend('eth_address', {
           getMessage: field => 'Insert a valid Ethereum address.',
@@ -269,20 +280,28 @@
           getMessage: field => 'You can\'t refer yourself.',
           validate: value => value.toLowerCase() !== this.dapp.metamask.address.toLowerCase(),
         });
-
-        this.loading = false;
       },
       async enable () {
         this.$store.dispatch('connect');
       },
-      async loadERC20Data (selected) {
+      async initData() {
+        this.loading = true;
+        this.loadingData = true;
+
+        await this.loadERC20Data();
+        await this.getFaucetData();
+        await this.getAccountData();
+
+        this.loading = false;
+      },
+      async loadERC20Data () {
         try {
-          this.token.name = this.faucet.tokens[selected].name;
-          this.token.symbol = this.faucet.tokens[selected].symbol;
-          this.token.decimals = this.faucet.tokens[selected].decimals;
-          this.token.address = this.faucet.tokens[selected].address;
+          this.token.name = this.faucet.selectedToken.name;
+          this.token.symbol = this.faucet.selectedToken.symbol;
+          this.token.decimals = this.faucet.selectedToken.decimals;
+          this.token.address = this.faucet.selectedToken.address;
           this.token.link = this.dapp.network.current.etherscanLink + '/token/' + this.token.address;
-          this.token.logo = this.$withBase(`/assets/images/faucet/logos/${this.faucet.tokens[selected].logo}`);
+          this.token.logo = this.$withBase(`/assets/images/faucet/logos/${this.faucet.selectedToken.logo}`);
         } catch (e) {
           console.log(e); // eslint-disable-line no-console
           this.loading = false;
@@ -321,7 +340,6 @@
         }
       },
       async getAccountData () {
-        this.loadingData = true;
         try {
           if (this.dapp.metamask.address) {
             this.account.address = this.dapp.web3.eth.accounts[0];
@@ -332,7 +350,7 @@
             this.account.receivedTokens = parseFloat(
               this.dapp.web3.fromWei(await this.promisify(
                 this.dapp.instances.faucet.receivedTokens, this.account.address, this.token.address
-              )
+                )
               ),
             );
             this.account.earnedByReferral = parseFloat(
