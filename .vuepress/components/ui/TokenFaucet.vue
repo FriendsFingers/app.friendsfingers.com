@@ -8,7 +8,8 @@
                     </option>
                 </b-form-select>
                 <b-form-text id="input-live-help">
-                    View on  <b-link :href="token.link" target="_blank">Etherscan</b-link>.
+                    View {{ token.name }} on
+                    <b-link :href="token.link" target="_blank">Etherscan</b-link>
                 </b-form-text>
             </b-card>
             <b-card :title="`${token.name} Faucet status`" id="faucet-box" class="mt-4 bg-purple">
@@ -31,9 +32,20 @@
 
                         <b-alert show>
                             <small>
-                                You can earn up to <b>{{ faucet.dailyRate * 4 }} {{ token.symbol }}</b> per day and
-                                up to <b>{{ faucet.referralRate * 4 }} {{ token.symbol }}</b>
-                                for each time your friends will use the faucet.
+                                <template v-if="account.isMember">
+                                    You will earn
+                                    <b>{{ faucet.dailyRate * account.dailyBonus }} {{ token.symbol }}</b>
+                                    per day and
+                                    <b>{{ faucet.referralRate * account.referralBonus }} {{ token.symbol }}</b>
+                                    for each time your friends will use the faucet.
+                                </template>
+                                <template v-else>
+                                    You can earn up to
+                                    <b>{{ faucet.dailyRate * 4 }} {{ token.symbol }}</b>
+                                    per day and up to
+                                    <b>{{ faucet.referralRate * 4 }} {{ token.symbol }}</b>
+                                    for each time your friends will use the faucet.
+                                </template>
                                 <b-link href="#"
                                         target="_blank" v-b-tooltip.hover title="How to earn more?">
                                     <font-awesome-icon icon="info-circle"/>
@@ -62,10 +74,8 @@
 
                         You have earned <b>{{ account.receivedTokens }} {{ token.symbol }}</b> by using faucet.<br>
 
-                        <template v-if="account.referredAddresses.length > 0">
-                            You have earned <b>{{ account.earnedByReferral }} {{ token.symbol }}</b>
-                            from your <b>{{ account.referredAddresses.length }}</b> referred addresses.<br>
-                        </template>
+                        You have earned <b>{{ account.earnedByReferral }} {{ token.symbol }}</b>
+                        from your <b>{{ account.referredAddresses.length }}</b> referred addresses.<br>
 
                         <template v-if="account.lastUpdate !== 0">
                             <small>
@@ -104,26 +114,34 @@
                                 </small>
                             </b-form-group>
 
-                            <b-btn type="submit"
-                                   variant="primary"
-                                   :disabled="errors.has('referral') || account.nextClaimTime > Date.now()"
-                                   size="lg">
-                                Get Tokens
-                            </b-btn>
-
-                            <br>
-                            <small class="text-muted mt-3">
-                                Note: you just need to pay Gas to get your tokens
-                                <b-link href="https://kb.myetherwallet.com/gas/what-is-gas-ethereum.html"
-                                        target="_blank" v-b-tooltip.hover title="What is Gas?">
-                                    <font-awesome-icon icon="info-circle"/>
+                            <b-alert v-if="!account.isMember" show variant="danger" class="mt-3">
+                                You must
+                                <b-link :to="$withBase('/dashboard')">
+                                    join DAO
                                 </b-link>
-                            </small>
-
-                            <b-alert show v-if="trx.hash" variant="success" class="mt-3">
-                                Last transaction:
-                                <b-link :href="trx.link" target="_blank">{{ trx.hash }}</b-link>
+                                to start earning tokens.
                             </b-alert>
+                            <template v-else>
+                                <b-btn type="submit"
+                                       variant="primary"
+                                       :disabled="errors.has('referral') || account.nextClaimTime > Date.now()"
+                                       size="lg">
+                                    Get Tokens
+                                </b-btn>
+                                <br>
+                                <small class="text-muted mt-3">
+                                    Note: you just need to pay Gas to get your tokens
+                                    <b-link href="https://kb.myetherwallet.com/gas/what-is-gas-ethereum.html"
+                                            target="_blank" v-b-tooltip.hover title="What is Gas?">
+                                        <font-awesome-icon icon="info-circle"/>
+                                    </b-link>
+                                </small>
+
+                                <b-alert show v-if="trx.hash" variant="success" class="mt-3">
+                                    Last transaction:
+                                    <b-link :href="trx.link" target="_blank">{{ trx.hash }}</b-link>
+                                </b-alert>
+                            </template>
                         </b-form>
                         <hr class="my-4">
                         <h4>Earn more Tokens with your referral link</h4>
@@ -227,6 +245,10 @@
           tokens: faucets[process.env.NODE_ENV && process.env.NODE_ENV === 'production' ? 'prod' : 'dev'],
         },
         account: {
+          isMember: false,
+          memberId: 0,
+          dailyBonus: 0,
+          referralBonus: 0,
           address: '',
           referral: '',
           referredAddresses: [],
@@ -259,6 +281,7 @@
         try {
           this.$store.dispatch('loadERC20');
           this.$store.dispatch('initFaucet');
+          this.$store.dispatch('initDao');
 
           this.ready();
         } catch (e) {
@@ -284,7 +307,7 @@
       async enable () {
         this.$store.dispatch('connect');
       },
-      async initData() {
+      async initData () {
         this.loading = true;
         this.loadingData = true;
 
@@ -316,17 +339,17 @@
           );
           this.faucet.referralRate = parseFloat(
             this.dapp.web3.fromWei(
-              await this.promisify(this.dapp.instances.faucet.getReferralRate, this.token.address)
+              await this.promisify(this.dapp.instances.faucet.getReferralRate, this.token.address),
             ),
           );
           this.faucet.remainingTokens = parseFloat(
             this.dapp.web3.fromWei(
-              await this.promisify(this.dapp.instances.faucet.remainingTokens, this.token.address)
+              await this.promisify(this.dapp.instances.faucet.remainingTokens, this.token.address),
             ),
           );
           this.faucet.distributedTokens = parseFloat(
             this.dapp.web3.fromWei(
-              await this.promisify(this.dapp.instances.faucet.totalDistributedTokens, this.token.address)
+              await this.promisify(this.dapp.instances.faucet.totalDistributedTokens, this.token.address),
             ),
           );
 
@@ -342,21 +365,50 @@
       async getAccountData () {
         try {
           if (this.dapp.metamask.address) {
+            this.account.isMember = await this.promisify(this.dapp.instances.dao.isMember, this.dapp.metamask.address);
+
+            if (this.account.isMember) {
+              const struct = await this.promisify(
+                this.dapp.instances.dao.getMemberByAddress, this.dapp.metamask.address
+              );
+              this.account.member = this.formatStructure(struct);
+              this.account.memberId = this.account.member.id;
+
+              this.account.dailyBonus = 1;
+              if (this.account.member.stakedTokens > 0) {
+                this.account.dailyBonus *= 2;
+              }
+              if (this.account.member.usedTokens > 0) {
+                this.account.dailyBonus *= 2;
+              }
+
+              this.account.referralBonus = 1;
+              if (this.account.member.stakedTokens > 0) {
+                this.account.referralBonus *= 2;
+              }
+              if (this.account.member.usedTokens > 0) {
+                this.account.referralBonus *= 2;
+              }
+            } else {
+              this.account.referralBonus = 0;
+            }
+
             this.account.address = this.dapp.web3.eth.accounts[0];
             this.account.referral = await this.promisify(this.dapp.instances.faucet.getReferral, this.account.address);
             this.account.referredAddresses = await this.promisify(
               this.dapp.instances.faucet.getReferredAddresses, this.account.address,
             );
             this.account.receivedTokens = parseFloat(
-              this.dapp.web3.fromWei(await this.promisify(
-                this.dapp.instances.faucet.receivedTokens, this.account.address, this.token.address
-                )
+              this.dapp.web3.fromWei(
+                await this.promisify(
+                  this.dapp.instances.faucet.receivedTokens, this.account.address, this.token.address,
+                ),
               ),
             );
             this.account.earnedByReferral = parseFloat(
               this.dapp.web3.fromWei(
                 await this.promisify(
-                  this.dapp.instances.faucet.earnedByReferral, this.account.address, this.token.address
+                  this.dapp.instances.faucet.earnedByReferral, this.account.address, this.token.address,
                 ),
               ),
             );
