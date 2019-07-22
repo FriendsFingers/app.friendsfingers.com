@@ -11,9 +11,8 @@
                     {{ $site.title }}
                 </h1>
                 <h4 class="text-muted">DAO Platform</h4>
-                <p class="lead">Use Shaka tokens to join DAO</p>
-                <p class="lead mt-5">
-                    <b-btn variant="primary" size="lg" class="m-1" :to="$withBase('/dao')">Explore DAO</b-btn>
+                <p class="lead mt-3">
+                    <b-btn variant="outline-primary" size="lg" class="m-1" :to="$withBase('/dao')">Explore</b-btn>
                 </p>
             </b-col>
         </b-row>
