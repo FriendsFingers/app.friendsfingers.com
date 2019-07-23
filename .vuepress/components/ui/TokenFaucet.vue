@@ -46,7 +46,7 @@
                                     <b>{{ faucet.referralRate * 4 }} {{ token.symbol }}</b>
                                     for each time your friends will use the faucet.
                                 </template>
-                                <b-link href="#"
+                                <b-link href="https://medium.com/friendsfingers/get-shaka-tokens-join-dao-and-earn-more-3b96c0f39d0c"
                                         target="_blank" v-b-tooltip.hover title="How to earn more?">
                                     <font-awesome-icon icon="info-circle"/>
                                 </b-link>
