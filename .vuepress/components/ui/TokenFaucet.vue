@@ -1,15 +1,16 @@
 <template>
     <b-row>
         <b-col lg="12">
-            <b-card header="Select your preferred token" class="mt-4">
+            <b-card header="Select your preferred Token" class="mt-4">
                 <b-form-select v-model="faucet.selectedToken" @change="initData">
                     <option v-for="faucetToken in faucet.tokens" :value="faucetToken">
-                        {{ `${faucetToken.address} - ${faucetToken.name} (${faucetToken.symbol})` }}
+                        {{ `${faucetToken.name} (${faucetToken.symbol}) - ${faucetToken.address}` }}
                     </option>
                 </b-form-select>
-                <b-form-text id="input-live-help">
-                    View {{ token.name }} on
-                    <b-link :href="token.link" target="_blank">Etherscan</b-link>
+                <b-form-text id="input-live-help" class="mt-2">
+                    View
+                    <b-img style="vertical-align: top;" :src="token.logo" height="16" :alt="token.name"/>
+                    {{ token.name }} on <b-link :href="token.link" target="_blank">Etherscan</b-link>
                 </b-form-text>
             </b-card>
             <b-card :title="`${token.name} Faucet status`" id="faucet-box" class="mt-4 bg-purple">
@@ -324,7 +325,7 @@
           this.token.decimals = this.faucet.selectedToken.decimals;
           this.token.address = this.faucet.selectedToken.address;
           this.token.link = this.dapp.network.current.etherscanLink + '/token/' + this.token.address;
-          this.token.logo = this.$withBase(`/assets/images/faucet/logos/${this.faucet.selectedToken.logo}`);
+          this.token.logo = this.$withBase(`/assets/images/faucet/token/${this.faucet.selectedToken.logo}`);
         } catch (e) {
           console.log(e); // eslint-disable-line no-console
           this.loading = false;

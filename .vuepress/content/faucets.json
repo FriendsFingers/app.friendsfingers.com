@@ -5,14 +5,14 @@
       "name": "UNO",
       "symbol": "UNO",
       "decimals": 18,
-      "logo": "uno.jpg"
+      "logo": "dev_uno.png"
     },
     {
       "address": "0x0B69247Dcf692bbCfd9b1070D9c7A2aA1a90A605",
       "name": "DUE",
       "symbol": "DUE",
       "decimals": 18,
-      "logo": "due.jpg"
+      "logo": "dev_due.png"
     }
   ],
   "prod": [
@@ -21,7 +21,7 @@
       "name": "Shaka",
       "symbol": "HAK",
       "decimals": 18,
-      "logo": "shaka.jpg"
+      "logo": "shaka.png"
     }
   ]
 }

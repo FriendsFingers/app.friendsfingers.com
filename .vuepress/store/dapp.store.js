@@ -141,12 +141,19 @@ export default {
             if (!state.legacy) {
               state.dapp.metamask.address = state.web3Provider.selectedAddress || '';
 
+              // TODO DEBUG
+              console.log('selectedAddress', state.web3Provider.selectedAddress);
+
               state.web3Provider.on('accountsChanged', function (accounts) {
-                document.location.reload();
+                // TODO DEBUG
+                console.log('accountsChanged', accounts);
+                // document.location.reload();
               });
 
               state.web3Provider.on('networkChanged', function (network) {
-                document.location.reload();
+                // TODO DEBUG
+                console.log('networkChanged', network);
+                // document.location.reload();
               });
             } else {
               state.dapp.metamask.address = state.dapp.web3.eth.accounts[0] || '';
