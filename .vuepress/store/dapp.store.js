@@ -143,6 +143,7 @@ export default {
 
               // TODO DEBUG
               console.log('selectedAddress', state.web3Provider.selectedAddress);
+              console.log('_selectedAddress', state.web3Provider._selectedAddress);
 
               state.web3Provider.on('accountsChanged', function (accounts) {
                 // TODO DEBUG
