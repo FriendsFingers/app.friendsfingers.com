@@ -144,11 +144,11 @@
 
         this.loading = false;
 
-        await this.getMember(1);
+        await this.getMember(this.dao.membersNumber);
       },
       loadMore () {
         this.pagination.page++;
-        this.getMember(this.memberList.length + 1);
+        this.getMember(this.dao.membersNumber - this.memberList.length);
       },
       async getDaoData () {
         try {
@@ -195,7 +195,7 @@
           this.memberList.length % (this.pagination.limit * this.pagination.page) !== 0 &&
           this.memberList.length < this.dao.membersNumber
         ) {
-          this.getMember(this.memberList.length + 1);
+          this.getMember(this.dao.membersNumber - this.memberList.length);
         }
       },
     },
