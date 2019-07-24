@@ -4,7 +4,7 @@
             <b-card header="Select your preferred Token" class="mt-4">
                 <b-form-select v-model="faucet.selectedToken" @change="initData">
                     <option v-for="faucetToken in faucet.tokens" :value="faucetToken">
-                        {{ `${faucetToken.name} (${faucetToken.symbol}) - ${faucetToken.address}` }}
+                        {{ `${faucetToken.name} (${faucetToken.symbol})` }}
                     </option>
                 </b-form-select>
                 <b-form-text id="input-live-help" class="mt-2">
