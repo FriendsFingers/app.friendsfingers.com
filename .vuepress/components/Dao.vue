@@ -31,7 +31,7 @@
         <b-row v-if="!loading">
             <b-col lg="10" offset-lg="1">
                 <b-row class="mt-2">
-                    <b-col md="2" sm="4" v-for="item in memberList" :key="item.id" class="p-2">
+                    <b-col md="2" sm="4" cols="6" v-for="item in memberList" :key="item.id" class="p-2">
                         <b-card no-body>
                             <b-card-body>
                                 <b-link :to="{ path: '/member/', query: { ref: item.id } }">
