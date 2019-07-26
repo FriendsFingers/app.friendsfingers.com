@@ -12,13 +12,6 @@
                 <b-card-body>
                     <ui--member-image :member="account.member"></ui--member-image>
                 </b-card-body>
-
-                <b-card-footer>
-                    <b-link :href="`${dapp.network.current.etherscanLink}/address/${account.member.address}`"
-                            target="_blank">
-                        {{ account.member.address }}
-                    </b-link>
-                </b-card-footer>
             </b-card>
         </b-col>
 
@@ -30,12 +23,13 @@
                     <div class="float-right">
                         <b-badge v-if="account.member.approved"
                                  v-b-tooltip.hover
-                                 title="Approved"
+                                 title="Verified"
                                  variant="success"
                                  pill
                                  class="p-1">
                             <font-awesome-icon icon="check-circle"></font-awesome-icon>
                         </b-badge>
+                        <!--
                         <b-badge v-else
                                  v-b-tooltip.hover
                                  title="Not approved"
@@ -44,11 +38,21 @@
                                  class="p-1">
                             <font-awesome-icon icon="exclamation-circle"></font-awesome-icon>
                         </b-badge>
+                        -->
                     </div>
                 </b-card-header>
 
                 <b-list-group flush>
-                    <b-list-group-item>Balance: <b>{{ account.tokenBalance }} {{ token.symbol }}</b></b-list-group-item>
+                    <b-list-group-item>
+                        Address:
+                        <b-link :href="`${dapp.network.current.etherscanLink}/address/${account.member.address}`"
+                                target="_blank">
+                            {{ account.member.address | truncate(10) }}
+                        </b-link>
+                    </b-list-group-item>
+                    <b-list-group-item>
+                        Balance: <b>{{ account.tokenBalance }} {{ token.symbol }}</b>
+                    </b-list-group-item>
                     <b-list-group-item>
                         Staked: <b>{{ account.member.stakedTokens }} {{ token.symbol }}</b>
                     </b-list-group-item>

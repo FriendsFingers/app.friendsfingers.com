@@ -45,12 +45,13 @@
                                 <div class="float-right">
                                     <b-badge v-if="item.approved"
                                              v-b-tooltip.hover
-                                             title="Approved"
+                                             title="Verified"
                                              variant="success"
                                              pill
                                              class="p-1">
                                         <font-awesome-icon icon="check-circle"></font-awesome-icon>
                                     </b-badge>
+                                    <!--
                                     <b-badge v-else
                                              v-b-tooltip.hover
                                              title="Not approved"
@@ -59,6 +60,7 @@
                                              class="p-1">
                                         <font-awesome-icon icon="exclamation-circle"></font-awesome-icon>
                                     </b-badge>
+                                    -->
                                 </div>
                             </b-card-footer>
                         </b-card>

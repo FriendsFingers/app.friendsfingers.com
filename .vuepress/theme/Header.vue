@@ -26,7 +26,7 @@
 
             <b-navbar-nav class="ml-auto">
                 <b-nav-item v-if="dapp.metamask.address === ''" :to="$withBase('/dashboard')">Connect</b-nav-item>
-                <b-nav-item-dropdown v-else :text="dapp.metamask.address | truncate(12)" right>
+                <b-nav-item-dropdown v-else :text="dapp.metamask.address | truncate(10)" right>
                     <b-dropdown-item :to="$withBase('/dashboard')">Dashboard</b-dropdown-item>
                     <!--<b-dropdown-item @click="disconnect()">Disconnect</b-dropdown-item>-->
                 </b-nav-item-dropdown>
