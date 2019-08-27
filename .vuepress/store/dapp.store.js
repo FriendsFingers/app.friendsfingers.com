@@ -139,22 +139,17 @@ export default {
             }
 
             if (!state.legacy) {
-              state.dapp.metamask.address = state.web3Provider.selectedAddress || '';
+              const address = await state.web3Provider.send('eth_accounts');
 
-              // TODO DEBUG
-              console.log('selectedAddress', state.web3Provider.selectedAddress);
-              console.log('_selectedAddress', state.web3Provider._selectedAddress);
+              // eslint-disable-next-line require-atomic-updates
+              state.dapp.metamask.address = address.result && address.result.length > 0 ? address.result[0] : '';
 
               state.web3Provider.on('accountsChanged', function (accounts) {
-                // TODO DEBUG
-                console.log('accountsChanged', accounts);
-                // document.location.reload();
+                document.location.reload();
               });
 
               state.web3Provider.on('networkChanged', function (network) {
-                // TODO DEBUG
-                console.log('networkChanged', network);
-                // document.location.reload();
+                document.location.reload();
               });
             } else {
               state.dapp.metamask.address = state.dapp.web3.eth.accounts[0] || '';
