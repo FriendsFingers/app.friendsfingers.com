@@ -334,23 +334,23 @@
       },
       async getFaucetData () {
         try {
-          this.faucet.isEnabled = await this.promisify(this.dapp.instances.faucet.isEnabled, this.token.address);
+          this.faucet.isEnabled = await this.ethGetCall(this.dapp.instances.faucet.isEnabled, this.token.address);
           this.faucet.dailyRate = parseFloat(
-            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.faucet.getDailyRate, this.token.address)),
+            this.dapp.web3.fromWei(await this.ethGetCall(this.dapp.instances.faucet.getDailyRate, this.token.address)),
           );
           this.faucet.referralRate = parseFloat(
             this.dapp.web3.fromWei(
-              await this.promisify(this.dapp.instances.faucet.getReferralRate, this.token.address),
+              await this.ethGetCall(this.dapp.instances.faucet.getReferralRate, this.token.address),
             ),
           );
           this.faucet.remainingTokens = parseFloat(
             this.dapp.web3.fromWei(
-              await this.promisify(this.dapp.instances.faucet.remainingTokens, this.token.address),
+              await this.ethGetCall(this.dapp.instances.faucet.remainingTokens, this.token.address),
             ),
           );
           this.faucet.distributedTokens = parseFloat(
             this.dapp.web3.fromWei(
-              await this.promisify(this.dapp.instances.faucet.totalDistributedTokens, this.token.address),
+              await this.ethGetCall(this.dapp.instances.faucet.totalDistributedTokens, this.token.address),
             ),
           );
 
@@ -366,10 +366,10 @@
       async getAccountData () {
         try {
           if (this.dapp.metamask.address) {
-            this.account.isMember = await this.promisify(this.dapp.instances.dao.isMember, this.dapp.metamask.address);
+            this.account.isMember = await this.ethGetCall(this.dapp.instances.dao.isMember, this.dapp.metamask.address);
 
             if (this.account.isMember) {
-              const struct = await this.promisify(
+              const struct = await this.ethGetCall(
                 this.dapp.instances.dao.getMemberByAddress, this.dapp.metamask.address
               );
               this.account.member = this.formatStructure(struct);
@@ -395,29 +395,29 @@
             }
 
             this.account.address = this.dapp.web3.eth.accounts[0];
-            this.account.referral = await this.promisify(this.dapp.instances.faucet.getReferral, this.account.address);
-            this.account.referredAddresses = await this.promisify(
+            this.account.referral = await this.ethGetCall(this.dapp.instances.faucet.getReferral, this.account.address);
+            this.account.referredAddresses = await this.ethGetCall(
               this.dapp.instances.faucet.getReferredAddresses, this.account.address,
             );
             this.account.receivedTokens = parseFloat(
               this.dapp.web3.fromWei(
-                await this.promisify(
+                await this.ethGetCall(
                   this.dapp.instances.faucet.receivedTokens, this.account.address, this.token.address,
                 ),
               ),
             );
             this.account.earnedByReferral = parseFloat(
               this.dapp.web3.fromWei(
-                await this.promisify(
+                await this.ethGetCall(
                   this.dapp.instances.faucet.earnedByReferral, this.account.address, this.token.address,
                 ),
               ),
             );
             this.account.lastUpdate = (
-              await this.promisify(this.dapp.instances.faucet.lastUpdate, this.account.address, this.token.address)
+              await this.ethGetCall(this.dapp.instances.faucet.lastUpdate, this.account.address, this.token.address)
             ).valueOf() * 1000;
             this.account.nextClaimTime = (
-              await this.promisify(this.dapp.instances.faucet.nextClaimTime, this.account.address, this.token.address)
+              await this.ethGetCall(this.dapp.instances.faucet.nextClaimTime, this.account.address, this.token.address)
             ).valueOf() * 1000;
 
             this.account.share.link = window.location.origin + this.$withBase(

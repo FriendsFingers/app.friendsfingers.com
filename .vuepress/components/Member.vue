@@ -77,8 +77,8 @@
       },
       async getTokenData () {
         try {
-          this.token.name = await this.promisify(this.dapp.instances.token.name);
-          this.token.symbol = await this.promisify(this.dapp.instances.token.symbol);
+          this.token.name = await this.ethGetCall(this.dapp.instances.token.name);
+          this.token.symbol = await this.ethGetCall(this.dapp.instances.token.symbol);
           this.token.link = this.dapp.network.current.etherscanLink + '/token/' + this.dapp.instances.token.address;
           this.token.logo = this.$withBase('/assets/images/logo/shaka_logo_white.png');
         } catch (e) {
@@ -91,9 +91,9 @@
         let struct;
 
         if (this.dapp.web3.isAddress(this.ref)) {
-          struct = await this.promisify(this.dapp.instances.dao.getMemberByAddress, this.ref);
+          struct = await this.ethGetCall(this.dapp.instances.dao.getMemberByAddress, this.ref);
         } else {
-          struct = await this.promisify(this.dapp.instances.dao.getMemberById, this.ref);
+          struct = await this.ethGetCall(this.dapp.instances.dao.getMemberById, this.ref);
         }
 
         this.account.member = this.formatStructure(struct);
@@ -101,7 +101,7 @@
         if (this.account.member) {
           this.account.tokenBalance = parseFloat(
             this.dapp.web3.fromWei(
-              await this.promisify(this.dapp.instances.token.balanceOf, this.account.member.address),
+              await this.ethGetCall(this.dapp.instances.token.balanceOf, this.account.member.address),
             ),
           ).toFixed(2);
 

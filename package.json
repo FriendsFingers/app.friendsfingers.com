@@ -29,31 +29,31 @@
     "url": "https://github.com/FriendsFingers/app.friendsfingers.com.git"
   },
   "dependencies": {
-    "web3": "0.20.6"
+    "web3": "0.20.7"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.22",
-    "@fortawesome/free-brands-svg-icons": "^5.10.2",
-    "@fortawesome/free-regular-svg-icons": "^5.10.2",
-    "@fortawesome/free-solid-svg-icons": "^5.10.2",
-    "@fortawesome/vue-fontawesome": "^0.1.6",
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-brands-svg-icons": "^5.11.2",
+    "@fortawesome/free-regular-svg-icons": "^5.11.2",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
+    "@fortawesome/vue-fontawesome": "^0.1.7",
     "@saeris/vue-spinners": "^1.0.8",
-    "@vuepress/plugin-google-analytics": "^1.0.3",
+    "@vuepress/plugin-google-analytics": "^1.1.0",
     "babel-eslint": "^10.0.3",
-    "bootstrap-vue": "^2.0.0-rc.28",
-    "eslint": "^6.2.2",
-    "eslint-config-standard": "^14.0.1",
+    "bootstrap-vue": "^2.0.2",
+    "eslint": "^6.4.0",
+    "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^5.2.3",
     "node-sass": "^4.12.0",
-    "qrcode": "^1.4.1",
-    "sass-loader": "^7.3.1",
+    "qrcode": "^1.4.2",
+    "sass-loader": "^8.0.0",
     "vee-validate": "^2.2.15",
     "vue-eslint-parser": "^6.0.4",
-    "vuepress": "^1.0.3",
+    "vuepress": "^1.1.0",
     "vuex": "^3.1.1"
   }
 }

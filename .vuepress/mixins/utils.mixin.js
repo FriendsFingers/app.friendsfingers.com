@@ -28,6 +28,11 @@ export default {
       }
       return vars;
     },
+    ethGetCall (fn, ...args) {
+      args.push({ from: this.dapp.fallbackAddress });
+
+      return this.promisify(fn, ...args);
+    },
     promisify (fn, ...args) {
       return new Promise((resolve, reject) => {
         fn(...args, (err, res) => {
@@ -51,8 +56,8 @@ export default {
         value,
         {
           color: {
-            dark: '#b733a7', // Blue dots
-            light: '#0000', // Transparent background
+            dark: '#b733a7',
+            light: '#0000',
           },
         }
       );

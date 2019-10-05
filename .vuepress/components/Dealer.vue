@@ -212,8 +212,8 @@
       },
       async getTokenData () {
         try {
-          this.token.name = await this.promisify(this.dapp.instances.token.name);
-          this.token.symbol = await this.promisify(this.dapp.instances.token.symbol);
+          this.token.name = await this.ethGetCall(this.dapp.instances.token.name);
+          this.token.symbol = await this.ethGetCall(this.dapp.instances.token.symbol);
           this.token.link = this.dapp.network.current.etherscanLink + '/token/' + this.dapp.instances.token.address;
           this.token.logo = this.$withBase('/assets/images/logo/shaka_logo_white.png');
         } catch (e) {
@@ -226,14 +226,14 @@
         try {
           this.dealer.address = this.dapp.instances.dealer.address;
           this.dealer.qrcode = await this.generateQRCode(this.dealer.address);
-          this.dealer.rate = parseFloat(await this.promisify(this.dapp.instances.dealer.rate));
+          this.dealer.rate = parseFloat(await this.ethGetCall(this.dapp.instances.dealer.rate));
 
           this.dealer.remainingTokens = parseFloat(
-            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.token.balanceOf, this.dealer.address)),
+            this.dapp.web3.fromWei(await this.ethGetCall(this.dapp.instances.token.balanceOf, this.dealer.address)),
           );
 
           this.contributions.totalSoldTokens = parseFloat(
-            this.dapp.web3.fromWei(await this.promisify(this.dapp.instances.contributions.totalSoldTokens)),
+            this.dapp.web3.fromWei(await this.ethGetCall(this.dapp.instances.contributions.totalSoldTokens)),
           );
 
           this.dealer.max = this.contributions.totalSoldTokens + this.dealer.remainingTokens;
@@ -248,7 +248,7 @@
       async getExpectedTokenAmount () {
         this.dealer.expectedTokenAmount = parseFloat(
           this.dapp.web3.fromWei(
-            await this.promisify(
+            await this.ethGetCall(
               this.dapp.instances.dealer.expectedTokenAmount,
               this.dapp.metamask.address,
               this.dapp.web3.toWei(this.ethAmount),

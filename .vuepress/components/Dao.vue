@@ -154,20 +154,20 @@
       },
       async getDaoData () {
         try {
-          this.dao.membersNumber = parseInt((await this.promisify(this.dapp.instances.dao.membersNumber)).valueOf());
+          this.dao.membersNumber = parseInt((await this.ethGetCall(this.dapp.instances.dao.membersNumber)).valueOf());
           this.dao.totalStakedTokens = parseFloat(
             this.dapp.web3.fromWei(
-              await this.promisify(this.dapp.instances.dao.totalStakedTokens),
+              await this.ethGetCall(this.dapp.instances.dao.totalStakedTokens),
             ),
           );
           this.dao.totalUsedTokens = parseFloat(
             this.dapp.web3.fromWei(
-              await this.promisify(this.dapp.instances.dao.totalUsedTokens),
+              await this.ethGetCall(this.dapp.instances.dao.totalUsedTokens),
             ),
           );
 
           if (this.dapp.metamask.address) {
-            this.account.isMember = await this.promisify(this.dapp.instances.dao.isMember, this.dapp.metamask.address);
+            this.account.isMember = await this.ethGetCall(this.dapp.instances.dao.isMember, this.dapp.metamask.address);
           }
         } catch (e) {
           this.loading = false;
@@ -177,8 +177,8 @@
       },
       async getTokenData () {
         try {
-          this.token.name = await this.promisify(this.dapp.instances.token.name);
-          this.token.symbol = await this.promisify(this.dapp.instances.token.symbol);
+          this.token.name = await this.ethGetCall(this.dapp.instances.token.name);
+          this.token.symbol = await this.ethGetCall(this.dapp.instances.token.symbol);
           this.token.link = this.dapp.network.current.etherscanLink + '/token/' + this.dapp.instances.token.address;
           this.token.logo = this.$withBase('/assets/images/logo/shaka_logo_white.png');
         } catch (e) {
@@ -188,7 +188,7 @@
         }
       },
       async getMember (memberId) {
-        const struct = await this.promisify(this.dapp.instances.dao.getMemberById, memberId);
+        const struct = await this.ethGetCall(this.dapp.instances.dao.getMemberById, memberId);
         const member = this.formatStructure(struct);
 
         this.memberList.push(member);

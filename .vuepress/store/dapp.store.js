@@ -12,6 +12,7 @@ export default {
     currentNetwork: '',
     web3Provider: null,
     dapp: {
+      fallbackAddress: '0x0000000000000000000000000000000000000001',
       web3: null,
       metamask: {
         address: '',

@@ -137,8 +137,8 @@
       },
       async getTokenData () {
         try {
-          this.token.name = await this.promisify(this.dapp.instances.token.name);
-          this.token.symbol = await this.promisify(this.dapp.instances.token.symbol);
+          this.token.name = await this.ethGetCall(this.dapp.instances.token.name);
+          this.token.symbol = await this.ethGetCall(this.dapp.instances.token.symbol);
           this.token.link = this.dapp.network.current.etherscanLink + '/token/' + this.dapp.instances.token.address;
           this.token.logo = this.$withBase('/assets/images/logo/shaka_logo_white.png');
         } catch (e) {
@@ -150,17 +150,19 @@
       async getAccountData () {
         this.loadingData = true;
         try {
-          this.account.isMember = await this.promisify(this.dapp.instances.dao.isMember, this.dapp.metamask.address);
+          this.account.isMember = await this.ethGetCall(this.dapp.instances.dao.isMember, this.dapp.metamask.address);
 
           if (this.account.isMember) {
-            const struct = await this.promisify(this.dapp.instances.dao.getMemberByAddress, this.dapp.metamask.address);
+            const struct = await this.ethGetCall(
+              this.dapp.instances.dao.getMemberByAddress, this.dapp.metamask.address
+            );
             this.account.member = this.formatStructure(struct);
             this.account.memberId = this.account.member.id;
           }
 
           this.account.tokenBalance = parseFloat(
             this.dapp.web3.fromWei(
-              await this.promisify(this.dapp.instances.token.balanceOf, this.dapp.metamask.address),
+              await this.ethGetCall(this.dapp.instances.token.balanceOf, this.dapp.metamask.address),
             ),
           ).toFixed(2);
 
