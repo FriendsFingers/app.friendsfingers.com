@@ -29,6 +29,13 @@
       "symbol": "FORK",
       "decimals": 18,
       "logo": "fork.png"
+    },
+    {
+      "address": "0xb9892F9A892f3e251fc58B9076c56aDD528eb8A6",
+      "name": "Moyom",
+      "symbol": "MYM",
+      "decimals": 18,
+      "logo": "moyom.png"
     }
   ]
 }
