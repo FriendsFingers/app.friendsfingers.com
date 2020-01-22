@@ -2,7 +2,7 @@
     <div :class="`body ${bodyClass}`">
         <site-header />
         <transition name="fade" mode="out-in">
-            <component v-if="page" :is="page" :key="page"></component>
+            <component v-if="page" :is="page" :key="page"/>
         </transition>
         <site-footer />
     </div>
@@ -26,4 +26,4 @@
     },
   };
 </script>
-<style src="../scss/main.scss" lang="scss"></style>
+<style src="../scss/main.scss" lang="scss"/>

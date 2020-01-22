@@ -20,7 +20,7 @@ export default {
         /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
         function (m, key, value) { // callback
           vars[key] = value !== undefined ? value : '';
-        }
+        },
       );
 
       if (param) {
@@ -59,7 +59,7 @@ export default {
             dark: '#b733a7',
             light: '#0000',
           },
-        }
+        },
       );
     },
     makeToast (title, text, variant = null) {

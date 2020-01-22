@@ -32,4 +32,4 @@
     },
   };
 </script>
-<style src="../scss/main.scss" lang="scss"></style>
+<style src="../scss/main.scss" lang="scss"/>

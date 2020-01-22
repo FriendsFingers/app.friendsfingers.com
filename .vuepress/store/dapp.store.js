@@ -162,7 +162,7 @@ export default {
           console.log('provided web3'); // eslint-disable-line no-console
           state.dapp.network.current = state.dapp.network.list[state.currentNetwork];
           state.web3Provider = new Web3.providers.HttpProvider(
-            state.dapp.network.list[state.currentNetwork].web3Provider
+            state.dapp.network.list[state.currentNetwork].web3Provider,
           );
           state.dapp.web3 = new Web3(state.web3Provider);
 

@@ -370,7 +370,7 @@
 
             if (this.account.isMember) {
               const struct = await this.ethGetCall(
-                this.dapp.instances.dao.getMemberByAddress, this.dapp.metamask.address
+                this.dapp.instances.dao.getMemberByAddress, this.dapp.metamask.address,
               );
               this.account.member = this.formatStructure(struct);
               this.account.memberId = this.account.member.id;
