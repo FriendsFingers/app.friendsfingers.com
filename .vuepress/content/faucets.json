@@ -43,13 +43,6 @@
       "symbol": "MYM",
       "decimals": 18,
       "logo": "moyom.png"
-    },
-    {
-      "address": "0x0360b415b56bd77def7ffd64ab9c0a9f63a84e4f",
-      "name": "NL Token",
-      "symbol": "NL",
-      "decimals": 18,
-      "logo": "noliq.png"
     }
   ]
 }
