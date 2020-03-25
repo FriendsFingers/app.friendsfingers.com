@@ -142,8 +142,14 @@ export default {
             if (!state.legacy) {
               const address = await state.web3Provider.send('eth_accounts');
 
-              // eslint-disable-next-line require-atomic-updates
-              state.dapp.metamask.address = address.result && address.result.length > 0 ? address.result[0] : '';
+              if (typeof address === 'string') {
+                state.dapp.metamask.address = address;
+              } else if (address.length > 0 && !address.result) {
+                state.dapp.metamask.address = address[0];
+              } else {
+                // eslint-disable-next-line require-atomic-updates
+                state.dapp.metamask.address = address.result && address.result.length > 0 ? address.result[0] : '';
+              }
 
               state.web3Provider.on('accountsChanged', function (accounts) {
                 document.location.reload();
