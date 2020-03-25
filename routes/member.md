@@ -5,7 +5,7 @@ title: FriendsFingers DAO Platform - Member details
 description: Member details page. Discover more about this DAO member.
 meta: 
     - property: og:image
-      content: /assets/images/social/friendsfingers_social_rect.png
+      content: https://app.friendsfingers.com/assets/images/social/friendsfingers_social_rect.png
     - property: og:title
       content: FriendsFingers DAO Platform - Member details
     - property: og:description
@@ -17,5 +17,5 @@ meta:
     - property: twitter:description
       content: Member details page. Discover more about this DAO member.
     - property: twitter:image
-      content: /assets/images/social/friendsfingers_social_rect.png
+      content: https://app.friendsfingers.com/assets/images/social/friendsfingers_social_rect.png
 ---

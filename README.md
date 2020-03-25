@@ -4,7 +4,7 @@ title: FriendsFingers DAO Platform
 description: FriendsFingers DAO Platform. Use Shaka tokens to join DAO.
 meta: 
     - property: og:image
-      content: /assets/images/social/friendsfingers_social_rect.png
+      content: https://app.friendsfingers.com/assets/images/social/friendsfingers_social_rect.png
     - property: og:title
       content: FriendsFingers DAO Platform
     - property: og:description
@@ -16,7 +16,7 @@ meta:
     - property: twitter:description
       content: FriendsFingers DAO Platform. Use Shaka tokens to join DAO.
     - property: twitter:image
-      content: /assets/images/social/friendsfingers_social_rect.png
+      content: https://app.friendsfingers.com/assets/images/social/friendsfingers_social_rect.png
 ---
 
 ## FriendsFingers DAPP official web site
