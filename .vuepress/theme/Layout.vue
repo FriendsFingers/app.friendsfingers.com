@@ -1,6 +1,7 @@
 <template>
     <div :class="`body ${bodyClass}`">
         <site-header />
+        <covid-banner />
         <transition name="fade" mode="out-in">
             <component v-if="page" :is="page" :key="page"/>
         </transition>
@@ -10,11 +11,13 @@
 <script>
   import SiteHeader from './Header.vue';
   import SiteFooter from './Footer.vue';
+  import CovidBanner from './CovidBanner.vue';
 
   export default {
     components: {
       SiteHeader,
       SiteFooter,
+      CovidBanner,
     },
     computed: {
       page () {
