@@ -427,7 +427,7 @@
             this.account.share.facebook = `https://www.facebook.com/sharer.php?u=${this.account.share.link}&quote=Earn FREE Tokens using FriendsFingers Faucets. Join DAO and earn more.`; // eslint-disable-line max-len
             this.account.share.twitter = `https://twitter.com/intent/tweet?url=${this.account.share.link}&hashtags=ethereum,blockchain,erc20,airdrop&text=Earn FREE Tokens using @FriendsFingers Faucets. Join DAO and earn more.`; // eslint-disable-line max-len
             this.account.share.telegram = `https://t.me/share/url?url=${this.account.share.link}&text=Earn FREE Tokens using @FriendsFingers Faucets. Join DAO and earn more.`; // eslint-disable-line max-len
-            this.account.share.whatsapp = `whatsapp://send?text=Earn FREE Tokens using FriendsFingers Faucets. Join DAO and earn more. ${this.account.share.link}`; // eslint-disable-line max-len
+            this.account.share.whatsapp = `https://wa.me/?text=Earn FREE Tokens using FriendsFingers Faucets. Join DAO and earn more. ${this.account.share.link}`; // eslint-disable-line max-len
           }
           this.loadingData = false;
         } catch (e) {
