@@ -394,7 +394,7 @@
               this.account.referralBonus = 0;
             }
 
-            this.account.address = this.dapp.web3.eth.accounts[0];
+            this.account.address = this.dapp.metamask.address;
             this.account.referral = await this.ethGetCall(this.dapp.instances.faucet.getReferral, this.account.address);
             this.account.referredAddresses = await this.ethGetCall(
               this.dapp.instances.faucet.getReferredAddresses, this.account.address,
