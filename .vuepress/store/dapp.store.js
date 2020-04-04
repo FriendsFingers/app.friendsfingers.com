@@ -139,27 +139,31 @@ export default {
               return this.dispatch('initWeb3', false);
             }
 
-            if (!state.legacy) {
-              const address = await state.web3Provider.send('eth_accounts');
-
-              if (typeof address === 'string') {
-                state.dapp.metamask.address = address;
-              } else if (address.length > 0 && !address.result) {
-                state.dapp.metamask.address = address[0];
-              } else {
-                // eslint-disable-next-line require-atomic-updates
-                state.dapp.metamask.address = address.result && address.result.length > 0 ? address.result[0] : '';
-              }
-
-              state.web3Provider.on('accountsChanged', function (accounts) {
-                document.location.reload();
-              });
-
-              state.web3Provider.on('networkChanged', function (network) {
-                document.location.reload();
-              });
+            if (state.dapp.web3.eth.accounts[0]) {
+              state.dapp.metamask.address = state.dapp.web3.eth.accounts[0];
             } else {
-              state.dapp.metamask.address = state.dapp.web3.eth.accounts[0] || '';
+              if (!state.legacy) {
+                const address = await state.web3Provider.send('eth_accounts');
+
+                if (typeof address === 'string') {
+                  state.dapp.metamask.address = address;
+                } else if (address.length > 0 && !address.result) {
+                  state.dapp.metamask.address = address[0];
+                } else {
+                  // eslint-disable-next-line require-atomic-updates
+                  state.dapp.metamask.address = address.result && address.result.length > 0 ? address.result[0] : '';
+                }
+
+                state.web3Provider.on('accountsChanged', function (accounts) {
+                  document.location.reload();
+                });
+
+                state.web3Provider.on('networkChanged', function (network) {
+                  document.location.reload();
+                });
+              } else {
+                state.dapp.metamask.address = state.dapp.web3.eth.accounts[0] || '';
+              }
             }
 
             resolve();
@@ -201,12 +205,16 @@ export default {
     },
     async connect ({ state, commit }) {
       try {
-        if (!state.legacy) {
-          await state.web3Provider.enable();
-
-          document.location.reload();
+        if (state.dapp.web3.eth.accounts[0]) {
+          state.dapp.metamask.address = state.dapp.web3.eth.accounts[0];
         } else {
-          state.dapp.metamask.address = state.dapp.web3.eth.accounts[0] || '';
+          if (!state.legacy) {
+            await state.web3Provider.enable();
+
+            document.location.reload();
+          } else {
+            state.dapp.metamask.address = state.dapp.web3.eth.accounts[0] || '';
+          }
         }
       } catch (e) {
         console.log(e); // eslint-disable-line no-console
