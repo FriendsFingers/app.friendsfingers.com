@@ -22,7 +22,7 @@
                 </li>
                 <li class="list-inline-item">
                     <small>
-                        &copy; 2019 🤙
+                        &copy; 2020 🤙
                         <b-link href="https://www.friendsfingers.com" target="_blank">FriendsFingers</b-link>
                     </small>
                 </li>

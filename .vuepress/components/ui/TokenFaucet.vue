@@ -132,7 +132,7 @@
                                 <br>
                                 <small class="text-muted mt-3">
                                     Note: you just need to pay Gas to get your tokens
-                                    <b-link href="https://kb.myetherwallet.com/gas/what-is-gas-ethereum.html"
+                                    <b-link href="https://kb.myetherwallet.com/en/transactions/what-is-gas/"
                                             target="_blank" v-b-tooltip.hover title="What is Gas?">
                                         <font-awesome-icon icon="info-circle"/>
                                     </b-link>
@@ -167,7 +167,7 @@
                             <b-btn :href="account.share.telegram" target="_blank" class="telegram">
                                 <font-awesome-icon :icon="['fab', 'telegram-plane']"/>
                             </b-btn>
-                            <b-btn v-if="isMobile()" :href="account.share.whatsapp" target="_blank" class="whatsapp">
+                            <b-btn :href="account.share.whatsapp" target="_blank" class="whatsapp">
                                 <font-awesome-icon :icon="['fab', 'whatsapp']"/>
                             </b-btn>
                         </p>
