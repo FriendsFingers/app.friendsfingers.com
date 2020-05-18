@@ -1,1 +1,0 @@
-document.location.href = 'https://www.friendsfingers.com' + window.location.pathname + window.location.search;
