@@ -4,10 +4,6 @@
   "version": "0.0.1",
   "description": "FriendsFingers DAPP official web site",
   "scripts": {
-    "lint:vue": "eslint .vuepress --ext .vue,.js",
-    "lint:vue:fix": "eslint .vuepress --ext .vue,.js --fix",
-    "lint": "eslint .vuepress",
-    "lint:fix": "eslint .vuepress --fix",
     "dev": "vuepress dev",
     "build": "vuepress build",
     "deploy": "vuepress build && sh scripts/deploy.sh"
@@ -28,32 +24,8 @@
     "type": "git",
     "url": "https://github.com/FriendsFingers/app.friendsfingers.com.git"
   },
-  "dependencies": {
-    "web3": "0.20.6"
-  },
   "devDependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.28",
-    "@fortawesome/free-brands-svg-icons": "^5.13.0",
-    "@fortawesome/free-regular-svg-icons": "^5.13.0",
-    "@fortawesome/free-solid-svg-icons": "^5.13.0",
-    "@fortawesome/vue-fontawesome": "^0.1.9",
-    "@saeris/vue-spinners": "^1.0.8",
     "@vuepress/plugin-google-analytics": "^1.4.0",
-    "babel-eslint": "^10.1.0",
-    "bootstrap-vue": "^2.8.0",
-    "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "eslint-plugin-vue": "^6.2.2",
-    "node-sass": "^4.13.1",
-    "qrcode": "1.4.2",
-    "sass-loader": "^8.0.2",
-    "vee-validate": "^2.2.15",
-    "vue-eslint-parser": "^7.0.0",
-    "vuepress": "^1.4.0",
-    "vuex": "^3.1.3"
+    "vuepress": "^1.4.0"
   }
 }
